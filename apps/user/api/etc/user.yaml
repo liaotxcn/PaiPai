@@ -1,0 +1,13 @@
+Name: user
+Host: 0.0.0.0
+Port: 8888
+
+UserRpc:
+  Etcd:
+    Hosts:
+      - x.x.x.x:3379     # 宿主机地址
+    Key: user.rpc
+
+JwtAuth:
+  AccessSecret: paipai
+  AccessExpire: 8640000

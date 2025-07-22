@@ -1,0 +1,19 @@
+Name: user.rpc
+ListenOn: 0.0.0.0:10000
+Etcd:
+  Hosts:
+    - x.x.x.x:3379    # 宿主机地址
+  Key: user.rpc
+
+Mysql:
+  DataSource: root:paipai@tcp(x.x.x.x:13306)/paipai?charset=utf8mb4
+
+Cache:
+  - Host: x.x.x.x:16379
+    Type: node
+    Pass: paipai
+
+Jwt:
+  AccessSecret: paipai
+  AccessExpire: 8640000
+

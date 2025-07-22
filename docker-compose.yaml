@@ -1,0 +1,56 @@
+version: '3'
+
+services:
+#  Etcd
+  etcd:
+    image: bitnami/etcd:3.5.20
+    container_name: etcd
+    ports:
+      - "3379:2379"
+      - "3380:2380"
+    environment:
+      - ETCD_ENABLE_V2=true
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://x.x.x,x:3379    # 宿主机地址
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_NAME=etcd
+    volumes:
+      - ./components/etcd/data:/bitnami/etcd/data
+      - ./components/etcd/logs:/bitnami/etcd/logs
+    networks:
+      pai-pai:
+
+# Redis
+  redis:
+    image: redis:alpine3.18
+    ports:
+      - 16379:6379
+    container_name: redis
+    volumes:
+      - ./components/redis/data:/data
+      - ./components/redis/config/redis.conf:/usr/local/redis/config/redis.conf
+    environment:
+      TZ: Asia/Shanghai
+    restart: always
+    networks:
+      pai-pai:
+    command: redis-server --requirepass easy-chat --appendonly yes
+
+# MySQL
+  mysql:
+    image: mysql:8.0
+    ports:
+      - 13306:3306
+    container_name: mysql
+    volumes:
+      - ./components/mysql/data:/var/lib/mysql
+      - /etc/localtime:/etc/localtime
+    environment:
+      MYSQL_ROOT_PASSWORD: xxxxxx   # MySQL-root密码
+    restart: always
+    networks:
+      pai-pai:
+
+networks:
+  pai-pai:
+    driver: bridge

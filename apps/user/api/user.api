@@ -1,0 +1,39 @@
+syntax = "v1"
+
+info (
+	title:  "用户服务的实例对象"
+	author: "paipai"
+)
+
+import (
+	"domain.api"
+)
+
+// -------------- user api v1 --------------
+// no need login
+@server (
+	prefix: v1/user
+	group:  user
+)
+service user {
+	@doc "用户注册"
+	@handler register
+	post /register (RegisterReq) returns (RegisterResp)
+
+	@doc "用户登入"
+	@handler login
+	post /login (LoginReq) returns (LoginResp)
+}
+
+//need login
+@server (
+	prefix: v1/user
+	group:  user
+	jwt:    JwtAuth
+)
+service user {
+	@doc "获取用户信息"
+	@handler detail
+	get /user (UserInfoReq) returns (UserInfoResp)
+}
+
