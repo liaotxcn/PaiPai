@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
-	zerr "github.com/zeromicro/x/errors"
+	zrpcErr "github.com/zeromicro/x/errors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -22,7 +22,7 @@ func LogInterceptor(ctx context.Context, req any, info *grpc.UnaryServerInfo, ha
 	logx.WithContext(ctx).Errorf("【RPC SRV ERR】 %v", err)
 
 	causeErr := errors.Cause(err)
-	if e, ok := causeErr.(*zerr.CodeMsg); ok {
+	if e, ok := causeErr.(*zrpcErr.CodeMsg); ok {
 		err = status.Error(codes.Code(e.Code), e.Msg)
 	}
 

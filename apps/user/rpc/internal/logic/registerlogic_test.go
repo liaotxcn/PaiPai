@@ -20,12 +20,12 @@ func TestRegisterLogic_Register(t *testing.T) {
 	}{
 		{
 			"1", args{in: &user.RegisterReq{
-			Phone:    "11111111111",
-			Nickname: "PaiCloud",
-			Password: "123456",
-			Avatar:   "pai.jpg",
-			Sex:      1,
-		}}, true, false,
+				Phone:    "11111111111",
+				Nickname: "PaiCloud",
+				Password: "123456",
+				Avatar:   "pai.jpg",
+				Sex:      1,
+			}}, true, false,
 		},
 	}
 	for _, tt := range tests {
