@@ -1,0 +1,18 @@
+Name: social
+Host: 0.0.0.0
+Port: 8881
+
+SocialRpc:
+  Etcd:
+    Host:
+      - x.x.x.x:3379   # 宿主机
+    Key: social.rpc
+
+UserRpc:
+  Etcd:
+    Host:
+      - x.x.x.x:3379
+    Key: user.rpc
+
+JwtAuth:
+  AccessSecret: paipai

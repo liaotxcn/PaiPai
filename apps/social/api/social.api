@@ -1,0 +1,195 @@
+syntax = "v1"
+
+info (
+	title:  "社交服务的实例对象"
+	author: "paipai"
+)
+
+type (
+	Friends {
+		Id        int32  `json:"id,omitempty"`
+		FriendUid string `json:"friend_uid,omitempty"`
+		Nickname  string `json:"nickname,omitempty"`
+		Avatar    string `json:"avatar,omitempty"`
+		Remark    string `json:"remark,omitempty"`
+	}
+	FriendRequests {
+		Id           int64  `json:"id,omitempty"`
+		UserId       string `json:"user_id,omitempty"`
+		ReqUid       string `json:"req_uid,omitempty"`
+		ReqMsg       string `json:"req_msg,omitempty"`
+		ReqTime      int64  `json:"req_time,omitempty"`
+		HandleResult int    `json:"handle_result,omitempty"`
+		HandleMsg    string `json:"handle_msg,omitempty"`
+	}
+	Groups {
+		Id              string `json:"id,omitempty"`
+		Name            string `json:"name,omitempty"`
+		Icon            string `json:"icon,omitempty"`
+		Status          int64  `json:"status,omitempty"`
+		GroupType       int64  `json:"group_type,omitempty"`
+		IsVerify        bool   `json:"is_verify,omitempty"`
+		Notification    string `json:"notification,omitempty"`
+		NotificationUid string `json:"notification_uid,omitempty"`
+	}
+	GroupMembers {
+		Id            int64  `json:"id,omitempty"`
+		GroupId       string `json:"group_id,omitempty"`
+		UserId        string `json:"user_id,omitempty"`
+		Nickname      string `json:"nickname,omitempty"`
+		UserAvatarUrl string `json:"user_avatar_url,omitempty"`
+		RoleLevel     int    `json:"role_level,omitempty"`
+		InviterUid    string `json:"inviter_uid,omitempty"`
+		OperatorUid   string `json:"operator_uid,omitempty"`
+	}
+	GroupRequests {
+		Id            int64  `json:"id,omitempty"`
+		UserId        string `json:"user_id,omitempty"`
+		GroupId       string `json:"group_id,omitempty"`
+		ReqMsg        string `json:"req_msg,omitempty"`
+		ReqTime       int64  `json:"req_time,omitempty"`
+		JoinSource    int64  `json:"join_source,omitempty"`
+		InviterUserId string `json:"inviter_user_id,omitempty"`
+		HandleUserId  string `json:"handle_user_id,omitempty"`
+		HandleTime    int64  `json:"handle_time,omitempty"`
+		HandleResult  int64  `json:"handle_result,omitempty"`
+	}
+)
+
+type (
+	FriendPutInReq {
+		ReqMsg  string `json:"req_msg,omitempty"`
+		ReqTime int64  `json:"req_time,omitempty"`
+		UserId  string `json:"user_uid"`
+	}
+	FriendPutInResp  {}
+)
+
+type (
+	FriendPutInHandleReq {
+		FriendReqId  int32 `json:"friend_req_id,omitempty"`
+		HandleResult int32 `json:"handle_result,omitempty"` // 处理结果
+	}
+	FriendPutInHandleResp  {}
+)
+
+type (
+	FriendPutInListReq  {}
+	FriendPutInListResp {
+		List []*FriendRequests `json:"list"`
+	}
+)
+
+type (
+	FriendListReq  {}
+	FriendListResp {
+		List []*Friends `json:"list"`
+	}
+)
+
+type (
+	GroupCreateReq {
+		Name string `json:"name,omitempty"`
+		Icon string `json:"icon,omitempty"`
+	}
+	GroupCreateResp  {}
+)
+
+type (
+	GroupPutInRep {
+		GroupId    string `json:"group_id,omitempty"`
+		ReqMsg     string `json:"req_msg,omitempty"`
+		ReqTime    int64  `json:"req_time,omitempty"`
+		JoinSource int64  `json:"join_source,omitempty"`
+	}
+	GroupPutInResp  {}
+)
+
+type (
+	GroupPutInHandleRep {
+		GroupReqId   int32  `json:"group_req_id,omitempty"`
+		GroupId      string `json:"group_id,omitempty"`
+		HandleResult int32  `json:"handle_result,omitempty"` // 处理结果
+	}
+	GroupPutInHandleResp  {}
+)
+
+type (
+	GroupPutInListRep {
+		GroupId string `json:"group_id,omitempty"`
+	}
+	GroupPutInListResp {
+		List []*GroupRequests `json:"list,omitempty"`
+	}
+)
+
+type (
+	GroupListRep  {}
+	GroupListResp {
+		List []*Groups `json:"list,omitempty"`
+	}
+)
+
+type (
+	GroupUserListReq {
+		GroupId string `json:"group_id,omitempty"`
+	}
+	GroupUserListResp {
+		List []*GroupMembers `json:"List,omitempty"`
+	}
+)
+
+@server (
+	prefix: v1/social
+	group:  friend
+	jwt:    JwtAuth
+)
+service social {
+	@doc "好友申请"
+	@handler friendPutIn
+	post /friend/putIn (FriendPutInReq) returns (FriendPutInResp)
+
+	@doc "好友申请处理"
+	@handler friendPutInHandle
+	put /friend/putIn (FriendPutInHandleReq) returns (FriendPutInHandleResp)
+
+	@doc "好友申请列表"
+	@handler friendPutInList
+	get /friend/putIns (FriendPutInListReq) returns (FriendPutInListResp)
+
+	@doc "好友列表"
+	@handler friendList
+	get /friends (FriendListReq) returns (FriendListResp)
+}
+
+@server (
+	prefix: v1/social
+	group:  group
+	jwt:    JwtAuth
+)
+service social {
+	@doc "创群"
+	@handler createGroup
+	post /group (GroupCreateReq) returns (GroupCreateResp)
+
+	@doc "申请进群"
+	@handler groupPutIn
+	post /group/putIn (GroupPutInRep) returns (GroupPutInResp)
+
+	@doc "申请进群处理"
+	@handler groupPutInHandle
+	put /group/putIn (GroupPutInHandleRep) returns (GroupPutInHandleResp)
+
+	@doc "申请进群列表"
+	@handler groupPutInList
+	get /group/putIns (GroupPutInListRep) returns (GroupPutInListResp)
+
+	@doc "用户申群列表"
+	@handler groupList
+	get /groups (GroupListRep) returns (GroupListResp)
+
+	@doc "成员列表列表"
+	@handler groupUserList
+	get /group/users (GroupUserListReq) returns (GroupUserListResp)
+}
+
