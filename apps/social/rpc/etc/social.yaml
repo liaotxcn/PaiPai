@@ -1,0 +1,14 @@
+Name: social.rpc
+ListenOn: 0.0.0.0:8080
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: social.rpc
+
+Mysql:
+  DataSource: root:paipai@tcp(x.x.x.x:13306)/paipai?charset=utf8mb4
+
+Cache:
+  - Host: x.x.x.x:16379
+    Type: node
+    Pass: paipai
