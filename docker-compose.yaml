@@ -34,7 +34,7 @@ services:
     restart: always
     networks:
       pai-pai:
-    command: redis-server --requirepass easy-chat --appendonly yes
+    command: redis-server --requirepass paipai --appendonly yes
 
 # MySQL
   mysql:
