@@ -1,0 +1,170 @@
+syntax = "proto3";
+
+package social;
+
+option go_package = "./social";
+
+// model
+message Friends {
+  int32  id = 1;
+  string userId = 2;
+  string remark = 3;
+  int32  addSource = 4; // 添加来源
+  string friendUid = 5;
+}
+
+message FriendRequests {
+  int32  id = 1;
+  string userId = 2;
+  string reqUid = 3;
+  string reqMsg = 4;
+  int64  reqTime = 5;
+  int32  handleResult = 6; // 处理结果
+}
+
+message Groups {
+  string id = 1;
+  string name = 2;
+  string icon = 3;
+  int32  status = 4;
+  string creator_uid = 5;
+  int32  groupType = 6;
+  bool   isVerify = 7;
+  string notification = 8; // 公告通知
+  string notificationUid = 9;
+}
+
+message GroupMembers {
+  int32  id = 1;
+  string groupId = 2;
+  string userId = 3;
+  int32  roleLevel = 6;
+  int64  joinTime = 7;
+  int32  joinSource = 8;
+  string inviterUid = 9;
+  string operatorUid = 10;
+}
+
+message GroupRequests {
+  int32  id = 1;
+  string groupId = 2;
+  string reqId = 3;
+  string reqMsg = 4;
+  int64  reqTime = 5;
+  int32  joinSource = 6;
+  string inviterUid = 7;
+  string handleUid = 8;
+  int32  handleResult = 9; // 处理结果
+}
+
+// req resp
+
+message FriendPutInReq {
+  string userId = 2;
+  string reqUid = 3;
+  string reqMsg = 4;
+  int64  reqTime = 5;
+}
+message FriendPutInResp {}
+
+message FriendPutInHandleReq {
+  int32  friendReqId = 1;
+  string userId = 2;
+  int32 handleResult = 3; // 处理结果
+}
+message FriendPutInHandleResp {}
+
+message FriendPutInListReq{
+  string userId = 1;
+}
+
+message FriendPutInListResp{
+  repeated FriendRequests list = 1;
+}
+
+message FriendListReq{
+  string userId = 1;
+}
+
+message FriendListResp{
+  repeated Friends list = 1;
+}
+
+// 群
+message GroupCreateReq {
+  string name = 2;
+  string icon = 3;
+  int32  status = 4;
+  string creator_uid = 5;
+}
+message GroupCreateResp {
+  string id = 1;
+}
+
+message GroupPutinReq {
+  string groupId = 2;
+  string reqId = 3;
+  string reqMsg = 4;
+  int64  reqTime = 5;
+  int32  joinSource = 6;
+  string inviterUid = 7;
+}
+message GroupPutinResp {
+  string groupId = 1;
+}
+
+message GroupPutinListReq {
+  string groupId = 1;
+}
+message GroupPutinListResp {
+  repeated GroupRequests list = 1;
+}
+
+message GroupPutInHandleReq {
+  int32  groupReqId = 1;
+  string groupId = 2;
+  string handleUid = 3;
+  int32  handleResult = 4; // 处理结果
+
+  string username = 6;
+  string userAvatarUrl = 7;
+}
+message GroupPutInHandleResp {
+  string groupId = 1;
+}
+
+message GroupListReq{
+  string userId = 1;
+}
+message GroupListResp{
+  repeated Groups list = 1;
+}
+
+message GroupUsersReq {
+  string groupId = 1;
+}
+message GroupUsersResp {
+  repeated GroupMembers List = 1;
+}
+
+
+// svc
+service social {
+  // 好友业务：请求好友、通过或拒绝申请、好友列表
+
+  rpc FriendPutIn(FriendPutInReq) returns(FriendPutInResp);
+  rpc FriendPutInHandle(FriendPutInHandleReq) returns(FriendPutInHandleResp);
+  rpc FriendPutInList(FriendPutInListReq) returns(FriendPutInListResp);
+  rpc FriendList(FriendListReq) returns (FriendListResp);
+
+  // 群业务：创建群，修改群，群公告，申请群，用户群列表，群成员，申请群，群退出..
+
+  rpc GroupCreate(GroupCreateReq) returns (GroupCreateResp);
+  rpc GroupPutin(GroupPutinReq) returns (GroupPutinResp);
+  rpc GroupPutinList(GroupPutinListReq) returns (GroupPutinListResp);
+  rpc GroupPutInHandle(GroupPutInHandleReq) returns(GroupPutInHandleResp);
+  rpc GroupList(GroupListReq) returns (GroupListResp);
+  rpc GroupUsers(GroupUsersReq) returns (GroupUsersResp);
+
+  // ..
+}
