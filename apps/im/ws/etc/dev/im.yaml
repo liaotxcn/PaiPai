@@ -1,0 +1,14 @@
+Name: im.ws
+ListenOn: 0.0.0.0:10090
+
+JwtAuth:
+  AccessSecret: paipai
+
+Mongo:
+  Url: "mongodb://root:paipai@x.x.x.x:47017"
+  Db: paipai
+
+MsgChatTransfer:
+  Topic: msgChatTransfer
+  Addrs:
+    - x.x.x.x:9092
