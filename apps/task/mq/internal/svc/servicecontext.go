@@ -1,8 +1,8 @@
 package svc
 
 import (
+	model "PaiPai/apps/im/immodels"
 	"PaiPai/apps/task/mq/internal/config"
-	"PaiPai/apps/user/models"
 	constants "PaiPai/pkg/constant"
 	"github.com/gorilla/websocket"
 	"github.com/zeromicro/go-zero/core/stores/redis"
@@ -15,16 +15,16 @@ type ServiceContext struct {
 	WsClient websocket.Client
 	*redis.Redis
 
-	models.ChatLogModel
-	models.ConversationModel
+	model.ChatLogModel
+	model.ConversationModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	svc := &ServiceContext{
 		Config:            c,
 		Redis:             redis.MustNewRedis(c.Redisx),
-		ChatLogModel:      models.MustChatLogModel(c.Mongo.Url, c.Mongo.Db),
-		ConversationModel: models.MustConversationModel(c.Mongo.Url, c.Mongo.Db),
+		ChatLogModel:      model.MustChatLogModel(c.Mongo.Url, c.Mongo.Db),
+		ConversationModel: model.MustConversationModel(c.Mongo.Url, c.Mongo.Db),
 	}
 
 	token, err := svc.GetSystemToken()

@@ -2,6 +2,7 @@ package mqclient
 
 import (
 	"PaiPai/apps/task/mq/mq"
+	"context"
 	"encoding/json"
 	"github.com/zeromicro/go-queue/kq"
 )
@@ -26,5 +27,5 @@ func (c *msgChatTransferClient) Push(msg *mq.MsgChatTransfer) error {
 		return err
 	}
 
-	return c.pusher.Push(string(body))
+	return c.pusher.Push(context.Background(), string(body))
 }
