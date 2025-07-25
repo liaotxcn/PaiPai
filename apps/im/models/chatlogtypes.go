@@ -2,6 +2,7 @@ package models
 
 import (
 	constants "PaiPai/pkg/constant"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
 

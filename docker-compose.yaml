@@ -67,6 +67,42 @@ services:
     networks:
       pai-pai:
 
+# Zookeeper
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - 2181:2181
+    container_name: zookeeper
+    volumes:
+      - /etc/localtime:/etc/localtime
+    environment:
+      TZ: Asia/Shanghai
+    restart: always
+    networks:
+      pai-pai:
+
+# Kafka
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    restart: always
+    ports:
+      - 9092:9092
+    environment:
+      TZ: Asia/Shanghai
+      KAFKA_BROKER_ID: 0
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "ws2ms_chat:8:1,ms2ps_chat:8:1,msg_to_mongo:8:1"
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://x.x.x.x:9092    # 宿主机地址
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_LISTENERS: INSIDE://:9092
+      KAFKA_HEAP_OPTS: "-Xmx512M -Xms256M"
+    depends_on:
+      - zookeeper
+    networks:
+      pai-pai:
+
 networks:
   pai-pai:
     driver: bridge

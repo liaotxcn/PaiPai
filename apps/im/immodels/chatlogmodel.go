@@ -23,7 +23,3 @@ func NewChatLogModel(url, db, collection string) ChatLogModel {
 		defaultChatLogModel: newDefaultChatLogModel(conn),
 	}
 }
-
-func MustChatLogModel(url, db string) ChatLogModel {
-	return NewChatLogModel(url, db, "chat_log")
-}

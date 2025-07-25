@@ -4,6 +4,7 @@ import (
 	"PaiPai/apps/im/ws/internal/svc"
 	"PaiPai/apps/im/ws/websocket"
 	"PaiPai/apps/im/ws/ws"
+	"PaiPai/apps/task/mq/mq"
 	constants "PaiPai/pkg/constant"
 	"time"
 )

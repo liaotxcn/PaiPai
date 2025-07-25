@@ -1,0 +1,23 @@
+Name: task.mq
+ListenOn: 0.0.0.0:10091
+
+MsgChatTransfer:
+  Name: MsgChatTransfer
+  Brokers:
+    - x.x.x.x:9092
+  Group: kafka
+  Topic: msgChatTransfer
+  Offset: first
+  Consumers: 1
+
+Redisx:
+  Host: x.x.x.x:16379
+  Type: node
+  Pass: pai-pai
+
+Mongo:
+  Url: "mongodb://root:paipai@x.x.x.x:47017"
+  Db: paipai
+
+Ws:
+  Host: 127.0.0.1:10090
