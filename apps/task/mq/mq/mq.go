@@ -2,6 +2,7 @@ package mq
 
 import constants "PaiPai/pkg/constant"
 
+// 消息格式
 type MsgChatTransfer struct {
 	ConversationId     string `json:"conversationId"`
 	constants.ChatType `json:"chatType"`

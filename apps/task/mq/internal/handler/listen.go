@@ -3,6 +3,7 @@ package handler
 import (
 	"PaiPai/apps/task/mq/internal/handler/msgTransfer"
 	"PaiPai/apps/task/mq/internal/svc"
+	"github.com/zeromicro/go-queue/kq"
 	"github.com/zeromicro/go-zero/core/service"
 )
 

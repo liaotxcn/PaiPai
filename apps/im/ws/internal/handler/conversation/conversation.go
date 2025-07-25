@@ -6,6 +6,7 @@ import (
 	"PaiPai/apps/im/ws/ws"
 	"PaiPai/apps/task/mq/mq"
 	constants "PaiPai/pkg/constant"
+	"github.com/mitchellh/mapstructure"
 	"time"
 )
 

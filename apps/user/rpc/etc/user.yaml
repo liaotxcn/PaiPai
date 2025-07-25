@@ -8,6 +8,11 @@ Etcd:
 Mysql:
   DataSource: root:paipai@tcp(x.x.x.x:13306)/paipai?charset=utf8mb4
 
+Redisx:
+  Host: x.x.x.x:16379
+  Type: node
+  Pass: paipai
+
 Cache:
   - Host: x.x.x.x:16379
     Type: node

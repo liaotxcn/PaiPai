@@ -1,6 +1,7 @@
 package msgTransfer
 
 import (
+	"PaiPai/apps/im/models"
 	"PaiPai/apps/im/ws/websocket"
 	"PaiPai/apps/task/mq/internal/svc"
 	"PaiPai/apps/task/mq/mq"
@@ -50,7 +51,7 @@ func (m *MsgChatTransfer) Consume(key, value string) error {
 
 func (m *MsgChatTransfer) addChatLog(ctx context.Context, data *mq.MsgChatTransfer) error {
 	// 记录消息
-	chatLog := immodels.ChatLog{
+	chatLog := models.ChatLog{
 		ConversationId: data.ConversationId,
 		SendId:         data.SendId,
 		RecvId:         data.RecvId,

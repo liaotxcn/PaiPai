@@ -3,6 +3,7 @@ package mqclient
 import (
 	"PaiPai/apps/task/mq/mq"
 	"encoding/json"
+	"github.com/zeromicro/go-queue/kq"
 )
 
 type MsgChatTransferClient interface {
