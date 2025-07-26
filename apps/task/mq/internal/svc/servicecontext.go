@@ -12,7 +12,7 @@ import (
 type ServiceContext struct {
 	config.Config
 
-	WsClient websocket.Client
+	WsClient websocket.Conn
 	*redis.Redis
 
 	model.ChatLogModel
