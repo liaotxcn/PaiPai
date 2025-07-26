@@ -1,6 +1,7 @@
 package msgTransfer
 
 import (
+	model "PaiPai/apps/im/immodels"
 	"PaiPai/apps/im/models"
 	"PaiPai/apps/im/ws/websocket"
 	"PaiPai/apps/task/mq/internal/svc"
@@ -61,10 +62,10 @@ func (m *MsgChatTransfer) addChatLog(ctx context.Context, data *mq.MsgChatTransf
 		MsgContent:     data.Content,
 		SendTime:       data.SendTime,
 	}
-	err := m.svc.ChatLogModel.Insert(ctx, &chatLog)
+	err := m.svc.ChatLogModel.Insert(ctx, (*model.ChatLog)(&chatLog))
 	if err != nil {
 		return err
 	}
 
-	return m.svc.ConversationModel.UpdateMsg(ctx, &chatLog)
+	return m.svc.ConversationModel.UpdateMsg(ctx, (*model.ChatLog)(&chatLog))
 }

@@ -2,9 +2,9 @@ package svc
 
 import (
 	model "PaiPai/apps/im/immodels"
+	"PaiPai/apps/im/ws/websocket"
 	"PaiPai/apps/task/mq/internal/config"
 	constants "PaiPai/pkg/constant"
-	"github.com/gorilla/websocket"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"net/http"
 )
@@ -12,7 +12,7 @@ import (
 type ServiceContext struct {
 	config.Config
 
-	WsClient websocket.Conn
+	WsClient websocket.Client
 	*redis.Redis
 
 	model.ChatLogModel

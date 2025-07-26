@@ -6,5 +6,5 @@ Etcd:
   Key: im.rpc
 
 Mongo:
-  Url: "mongodb://root:paipai@192.168.117.24:47017"
+  Url: "mongodb://root:paipai@x.x.x.x:47017"
   Db: pai-pai

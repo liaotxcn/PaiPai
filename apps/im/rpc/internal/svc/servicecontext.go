@@ -17,7 +17,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config: c,
 
-		ChatLogModel:       model.MusstChatLogModel(c.Mongo.Url, c.Mongo.Db),
+		ChatLogModel:       model.MustChatLogModel(c.Mongo.Url, c.Mongo.Db),
 		ConversationsModel: model.MustConversationsModel(c.Mongo.Url, c.Mongo.Db),
 		ConversationModel:  model.MustConversationModel(c.Mongo.Url, c.Mongo.Db),
 	}
