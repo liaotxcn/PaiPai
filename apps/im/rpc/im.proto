@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package im;
+
+option go_package = "./im";
+
+// ------------ model -----------------
+
+message ChatLog {
+  string id = 1;
+  string conversationId = 2;
+  string sendId = 3;
+  string recvId = 4;
+  int32 msgType = 5;
+  string msgContent = 6;
+  int32 chatType = 7;
+  int64 SendTime = 8;
+  bytes readRecords = 9;
+}
+
+message Conversation {
+  string conversationId = 1;
+  int32 chatType = 2;
+  string targetId = 3;
+  bool isShow = 4;
+  int64 seq = 5;
+  // 总消息数
+  int32 total = 6;
+  // 未读消息数
+  int32 toRead = 7;
+  // 已读消息
+  int32 Read = 9;
+  ChatLog msg = 8;
+}
+
+// ------------ req resp ---------------
+
+message GetConversationsReq {
+  string userId = 1;
+}
+message GetConversationsResp {
+  map<string, Conversation> conversationList = 2;
+}
+
+message PutConversationsReq {
+  string id = 1;
+  string userId = 2;
+  map<string, Conversation> conversationList = 3;
+}
+message PutConversationsResp {}
+
+message GetChatLogReq {
+  string conversationId = 1;
+  int64 startSendTime = 2;
+  int64 endSendTime = 3;
+  int64 count = 4;
+  string msgId = 5;
+}
+message GetChatLogResp {
+  repeated ChatLog List = 1;
+}
+
+message SetUpUserConversationReq{
+  string SendId = 1;
+  string recvId = 2;
+  int32 chatType = 3;
+}
+
+message SetUpUserConversationResp{}
+
+message CreateGroupConversationReq {
+  string GroupId = 1;
+  string CreateId = 2;
+}
+message CreateGroupConversationResp {}
+
+service Im {
+  // 获取会话记录
+  rpc GetChatLog(GetChatLogReq) returns(GetChatLogResp);
+  // 建立会话: 群聊, 私聊
+  rpc SetUpUserConversation(SetUpUserConversationReq) returns(SetUpUserConversationResp);
+  // 获取会话
+  rpc GetConversations(GetConversationsReq) returns(GetConversationsResp);
+  // 更新会话
+  rpc PutConversations(PutConversationsReq)  returns(PutConversationsResp);
+
+  rpc CreateGroupConversation(CreateGroupConversationReq) returns(CreateGroupConversationResp);
+}

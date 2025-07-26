@@ -1,0 +1,10 @@
+Name: im.rpc
+ListenOn: 127.0.0.1:8080
+Etcd:
+  Hosts:
+    - x.x.x.x:3379   # 宿主机地址
+  Key: im.rpc
+
+Mongo:
+  Url: "mongodb://root:paipai@192.168.117.24:47017"
+  Db: pai-pai
