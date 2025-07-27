@@ -36,6 +36,7 @@ func (l *SetUpUserConversationLogic) SetUpUserConversation(in *im.SetUpUserConve
 	var res im.SetUpUserConversationResp
 	switch constants.ChatType(in.ChatType) {
 	case constants.SingleChatType:
+
 		// 生成会话的id
 		conversationId := wuid.CombineId(in.SendId, in.RecvId)
 		// 验证是否建立过会话
@@ -63,6 +64,13 @@ func (l *SetUpUserConversationLogic) SetUpUserConversation(in *im.SetUpUserConve
 			return nil, err
 		}
 		err = l.setUpUserConversation(conversationId, in.RecvId, in.SendId, constants.SingleChatType, false)
+		if err != nil {
+			return nil, err
+		}
+
+	//	群聊
+	case constants.GroupChatType:
+		err := l.setUpUserConversation(in.RecvId, in.SendId, in.RecvId, constants.GroupChatType, true)
 		if err != nil {
 			return nil, err
 		}

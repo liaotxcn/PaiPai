@@ -1,6 +1,8 @@
 package websocket
 
-import "time"
+import (
+	"time"
+)
 
 type ServerOptions func(opt *serverOption)
 
@@ -13,6 +15,8 @@ type serverOption struct {
 	patten string
 
 	maxConnectionIdle time.Duration
+
+	concurrency int // 群聊并发量级
 }
 
 func newServerOptions(opts ...ServerOptions) serverOption {
@@ -21,6 +25,7 @@ func newServerOptions(opts ...ServerOptions) serverOption {
 		maxConnectionIdle: defaultMaxConnectionIdle,
 		ackTimeout:        defaultAckTimeout,
 		patten:            "/ws",
+		concurrency:       defaultConcurrency,
 	}
 
 	for _, opt := range opts {

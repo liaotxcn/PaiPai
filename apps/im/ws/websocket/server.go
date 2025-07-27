@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/threading"
 	"time"
 
 	"net/http"
@@ -35,6 +36,8 @@ func (t AckType) ToString() string {
 type Server struct {
 	sync.RWMutex
 
+	*threading.TaskRunner
+
 	opt            *serverOption
 	authentication Authentication
 
@@ -64,7 +67,8 @@ func NewServer(addr string, opts ...ServerOptions) *Server {
 		connToUser: make(map[*Conn]string),
 		userToConn: make(map[string]*Conn),
 
-		Logger: logx.WithContext(context.Background()),
+		Logger:     logx.WithContext(context.Background()),
+		TaskRunner: threading.NewTaskRunner(opt.concurrency),
 	}
 }
 

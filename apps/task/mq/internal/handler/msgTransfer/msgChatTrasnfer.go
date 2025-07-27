@@ -4,6 +4,7 @@ import (
 	model "PaiPai/apps/im/immodels"
 	"PaiPai/apps/im/models"
 	"PaiPai/apps/im/ws/websocket"
+	"PaiPai/apps/social/rpc/socialclient"
 	"PaiPai/apps/task/mq/internal/svc"
 	"PaiPai/apps/task/mq/mq"
 	constants "PaiPai/pkg/constant"
@@ -38,10 +39,41 @@ func (m *MsgChatTransfer) Consume(key, value string) error {
 
 	// 记录数据
 	if err := m.addChatLog(ctx, &data); err != nil {
+		switch data.ChatType {
+		case constants.SingleChatType:
+			return m.single(&data)
+		case constants.GroupChatType:
+			return m.group(ctx, &data)
+		}
+	}
+	return nil
+}
+
+func (m *MsgChatTransfer) single(data *mq.MsgChatTransfer) error {
+	// 私聊推送消息
+	return m.svc.WsClient.Send(websocket.Message{
+		FrameType: websocket.FrameData,
+		Method:    "push",
+		FormId:    constants.SYSTEM_ROOT_UID,
+		Data:      data,
+	})
+}
+
+func (m *MsgChatTransfer) group(ctx context.Context, data *mq.MsgChatTransfer) error {
+	// 群聊推送消息
+	users, err := m.svc.Social.GroupUsers(ctx, &socialclient.GroupUsersReq{
+		GroupId: data.RecvId,
+	})
+	if err != nil {
 		return err
 	}
-
-	// 推送消息
+	data.RecvIds = make([]string, 0, len(users.List))
+	for _, menbers := range users.List {
+		if menbers.UserId == data.SendId {
+			continue
+		}
+		data.RecvIds = append(data.RecvIds, menbers.UserId)
+	}
 	return m.svc.WsClient.Send(websocket.Message{
 		FrameType: websocket.FrameData,
 		Method:    "push",

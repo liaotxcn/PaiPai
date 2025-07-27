@@ -19,5 +19,11 @@ Mongo:
   Url: "mongodb://root:paipai@x.x.x.x:47017"
   Db: paipai
 
+SocialRpc:
+  Etcd:
+    Hosts:
+      - x.x.x.x:2379
+    Key: social.rpc
+
 Ws:
   Host: 127.0.0.1:10090
