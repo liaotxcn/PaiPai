@@ -59,5 +59,7 @@ func (l *GroupCreateLogic) GroupCreate(in *social.GroupCreateReq) (*social.Group
 		return nil
 	})
 
-	return &social.GroupCreateResp{}, err
+	return &social.GroupCreateResp{
+		Id: groups.Id,
+	}, err
 }

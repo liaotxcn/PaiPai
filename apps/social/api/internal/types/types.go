@@ -136,3 +136,6 @@ type Groups struct {
 	Notification    string `json:"notification,omitempty"`
 	NotificationUid string `json:"notification_uid,omitempty"`
 }
+
+type 
+
