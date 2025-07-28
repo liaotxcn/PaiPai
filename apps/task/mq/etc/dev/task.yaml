@@ -10,6 +10,15 @@ MsgChatTransfer:
   Offset: first
   Consumers: 1
 
+MsgReadTransfer:
+  Name: MsgReadTransfer
+  Brokers:
+    - x.x.x.x:9092
+  Group: kafka
+  Topic: msgReadTransfer
+  Offset: first
+  Consumers: 1
+
 Redisx:
   Host: x.x.x.x:16379
   Type: node
