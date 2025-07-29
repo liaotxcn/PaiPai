@@ -1,7 +1,9 @@
 package group
 
 import (
+	"PaiPai/apps/im/rpc/imclient"
 	"PaiPai/apps/social/rpc/socialclient"
+	constants "PaiPai/pkg/constant"
 	"PaiPai/pkg/ctxdata"
 	"context"
 
@@ -38,5 +40,16 @@ func (l *GroupPutInLogic) GroupPutIn(req *types.GroupPutInRep) (resp *types.Grou
 		ReqTime:    req.ReqTime,
 		JoinSource: int32(req.JoinSource),
 	})
-	return
+
+	if res.GroupId == "" {
+		return nil, err
+	}
+
+	_, err := l.svcCtx.Im.SetUpUserConversation(l.ctx, &imclient.SetUpUserConversationReq{
+		SendId:   uid,
+		RecvId:   res.GroupId,
+		ChatType: int32(constants.GroupChatType),
+	})
+
+	return nil, err
 }

@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/edwingeng/wuid/mysql/wuid"
+	"sort"
+	"strconv"
 )
 
 // id生成工具
@@ -12,9 +14,10 @@ import (
 
 var w *wuid.WUID
 
-func Init(dns string) {
+func Init(dsn string) {
+
 	newDB := func() (*sql.DB, bool, error) {
-		db, err := sql.Open("mysql", dns)
+		db, err := sql.Open("mysql", dsn)
 		if err != nil {
 			return nil, false, err
 		}
@@ -25,9 +28,22 @@ func Init(dns string) {
 	_ = w.LoadH28FromMysql(newDB, "wuid")
 }
 
-func GenUid(dns string) string {
+func GenUid(dsn string) string {
 	if w == nil {
-		Init(dns)
+		Init(dsn)
 	}
+
 	return fmt.Sprintf("%#016x", w.Next())
+}
+
+func CombineId(aid, bid string) string {
+	ids := []string{aid, bid}
+
+	sort.Slice(ids, func(i, j int) bool {
+		a, _ := strconv.ParseUint(ids[i], 0, 64)
+		b, _ := strconv.ParseUint(ids[j], 0, 64)
+		return a < b
+	})
+
+	return fmt.Sprintf("%s_%s", ids[0], ids[1])
 }

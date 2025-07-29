@@ -1,0 +1,96 @@
+syntax = "v1"
+
+info (
+	title:  "im消息服务"
+	author: "paipai"
+)
+
+// domain.api
+type ChatLog {
+	Id             string `json:"id,omitempty"`
+	ConversationId string `json:"conversationId,omitempty"`
+	SendId         string `json:"sendId,omitempty"`
+	RecvId         string `json:"recvId,omitempty"`
+	MsgType        int32  `json:"msgType,omitempty"`
+	MsgContent     string `json:"msgContent,omitempty"`
+	ChatType       int32  `json:"chatType,omitempty"`
+	SendTime       int64  `json:"sendTime,omitempty"`
+}
+
+type Conversation {
+	ConversationId string `json:"conversationId,omitempty"`
+	ChatType       int32  `json:"chatType,omitempty"`
+	IsShow         bool   `json:"isShow,omitempty"`
+	Seq            int64  `json:"seq,omitempty"`
+	Read           int32  `json:"read,omitempty"`
+}
+
+// im api v1
+type ChatLogReq {
+	MsgId          string `json:"msgId"`
+	ConversationId string `json:"conversationId"`
+	StartSendTime  int64  `json:"startSendTime,omitempty"`
+	EndSendTime    int64  `json:"endSendTime,omitempty"`
+	Count          int64  `json:"count,omitempty"`
+}
+
+type ChatLogResp {
+	List []*ChatLog `json:"list"`
+}
+
+type GetConversationsReq {}
+
+type GetConversationsResp {
+	ConversationList map[string]*Conversation `json:"conversationList"`
+}
+
+type PutConversationsReq {
+	ConversationList map[string]*Conversation `json:"conversationList"`
+}
+
+type PutConversationsResp {}
+
+type SetUpUserConversationReq {
+	SendId   string `json:"sendId,omitempty"`
+	RecvId   string `json:"recvId,omitempty"`
+	ChatType int32  `json:"chatType,omitempty"`
+}
+
+type SetUpUserConversationResp {}
+
+type GetChatLogReadRecordsReq {
+	MsgId string `json:"msgId"`
+}
+
+type GetChatLogReadRecordsResp {
+	Reads   []string `json:"reads"`
+	UnReads []string `json:"unReads"`
+}
+
+// API 服务定义
+@server (
+	prefix: v1/im
+	jwt:    JwtAuth
+)
+service im {
+	@doc "根据用户获取聊天记录"
+	@handler getChatLog
+	get /chatLog (ChatLogReq) returns (ChatLogResp)
+
+	@doc "获取消息已读/未读记录"
+	@handler getChatLogReadRecords
+	get /chatLog/readRecords (GetChatLogReadRecordsReq) returns (GetChatLogReadRecordsResp)
+
+	@doc "建立会话"
+	@handler setUpUserConversation
+	post /setup/conversation (SetUpUserConversationReq) returns (SetUpUserConversationResp)
+
+	@doc "获取会话"
+	@handler getConversations
+	get /conversation (GetConversationsReq) returns (GetConversationsResp)
+
+	@doc "更新会话"
+	@handler putConversations
+	put /conversation (PutConversationsReq) returns (PutConversationsResp)
+}
+

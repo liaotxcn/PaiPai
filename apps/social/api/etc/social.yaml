@@ -14,5 +14,11 @@ UserRpc:
       - x.x.x.x:3379
     Key: user.rpc
 
+ImRpc:
+  Etcd:
+    Host:
+      - x.x.x.x:3379
+    Key: im.rpc
+
 JwtAuth:
   AccessSecret: paipai

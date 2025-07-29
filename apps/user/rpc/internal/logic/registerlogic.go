@@ -37,11 +37,12 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, error) {
 	// todo: add your logic here and delete this line
 
-	// 验证用户是否组注册(根据手机号)
-	userEntity, err := l.svcCtx.UserModels.FindByPhone(l.ctx, in.Phone)
+	// 1. 验证用户是否注册，根据手机号码验证
+	userEntity, err := l.svcCtx.UsersModel.FindByPhone(l.ctx, in.Phone)
 	if err != nil && err != models.ErrNotFound {
 		return nil, err
 	}
+
 	if userEntity != nil {
 		return nil, ErrPhoneIsRegister
 	}
@@ -57,6 +58,7 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, erro
 			Valid: true,
 		},
 	}
+
 	if len(in.Password) > 0 {
 		genPassword, err := encrypt.GenPasswordHash([]byte(in.Password))
 		if err != nil {
@@ -68,7 +70,7 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, erro
 		}
 	}
 
-	_, err = l.svcCtx.UserModels.Insert(l.ctx, userEntity)
+	_, err = l.svcCtx.UsersModel.Insert(l.ctx, userEntity)
 	if err != nil {
 		return nil, err
 	}

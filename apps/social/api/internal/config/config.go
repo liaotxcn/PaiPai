@@ -7,10 +7,12 @@ import (
 
 type Config struct {
 	rest.RestConf
+	UserRpc   zrpc.RpcClientConf
+	SocialRpc zrpc.RpcClientConf
+	ImRpc     zrpc.RpcClientConf
+
 	JwtAuth struct {
 		AccessSecret string
 		//AccessExpire int64
 	}
-	UserRpc   zrpc.RpcClientConf
-	SocialRpc zrpc.RpcClientConf
 }

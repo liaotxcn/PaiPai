@@ -34,14 +34,14 @@ func (l *FindUserLogic) FindUser(in *user.FindUserReq) (*user.FindUserResp, erro
 	)
 
 	if in.Phone != "" {
-		userEntity, err := l.svcCtx.UserModels.FindByPhone(l.ctx, in.Phone)
+		userEntity, err := l.svcCtx.UsersModel.FindByPhone(l.ctx, in.Phone)
 		if err == nil {
 			userEntitys = append(userEntitys, userEntity)
 		}
 	} else if in.Name != "" {
-		userEntitys, err = l.svcCtx.UserModels.ListByName(l.ctx, in.Name)
+		userEntitys, err = l.svcCtx.UsersModel.ListByName(l.ctx, in.Name)
 	} else if len(in.Ids) > 0 {
-		userEntitys, err = l.svcCtx.UserModels.ListByIds(l.ctx, in.Ids)
+		userEntitys, err = l.svcCtx.UsersModel.ListByIds(l.ctx, in.Ids)
 	}
 
 	if err != nil {
