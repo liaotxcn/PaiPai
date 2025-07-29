@@ -40,4 +40,4 @@ SocialRpc:
     Key: social.rpc
 
 Ws:
-  Host: 127.0.0.1:10090
+  Host: x.x.x.x:10090
