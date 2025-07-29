@@ -12,3 +12,8 @@ MsgChatTransfer:
   Topic: msgChatTransfer
   Addrs:
     - x.x.x.x:9092
+
+MsgReadTransfer:
+  Topic: msgReadTransfer
+  Addrs:
+    - x.x.x.x:9092

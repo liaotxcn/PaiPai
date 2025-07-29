@@ -10,6 +10,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type MsgChatTransfer struct {
@@ -26,9 +27,11 @@ func (m *MsgChatTransfer) Consume(key, value string) error {
 	fmt.Println("key : ", key, " value : ", value)
 
 	var (
-		data mq.MsgChatTransfer
-		ctx  = context.Background()
+		data  mq.MsgChatTransfer
+		ctx   = context.Background()
+		msgId = primitive.NewObjectID()
 	)
+
 	if err := json.Unmarshal([]byte(value), &data); err != nil {
 		return err
 	}
@@ -41,13 +44,15 @@ func (m *MsgChatTransfer) Consume(key, value string) error {
 		RecvIds:        data.RecvIds,
 		SendTime:       data.SendTime,
 		MType:          data.MType,
+		MsgId:          msgId.Hex(),
 		Content:        data.Content,
 	})
 }
 
-func (m *MsgChatTransfer) addChatLog(ctx context.Context, data *mq.MsgChatTransfer) error {
+func (m *MsgChatTransfer) addChatLog(ctx context.Context, msgId primitive.ObjectID, data *mq.MsgChatTransfer) error {
 	// 记录消息
 	chatLog := models.ChatLog{
+		ID:             msgId,
 		ConversationId: data.ConversationId,
 		SendId:         data.SendId,
 		RecvId:         data.RecvId,

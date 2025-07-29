@@ -24,6 +24,7 @@ type (
 		RecvId             string   `mapstructure:"recvId"`
 		RecvIds            []string `mapstructure:"recvIds"`
 		SendTime           int64    `mapstructure:"sendTime"`
+		MsgId              string   `mapstructure:"msgId"`
 		
 		ReadRecords map[string]string     `json:"readRecords"`
 		ContentType constants.ContentType `mapstructure:"contentType"`
