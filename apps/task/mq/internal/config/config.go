@@ -20,6 +20,12 @@ type Config struct {
 		Db  string
 	}
 
+	MsgReadHandler struct {
+		GroupMsgReadHandler          int
+		GroupMsgReadRecordDelayTime  int64
+		GroupMsgReadRecordDelayCount int
+	}
+
 	SocialRpc zrpc.RpcClientConf
 
 	Ws struct {
