@@ -8,6 +8,18 @@ UserRpc:
       - x.x.x.x:3379     # 宿主机地址
     Key: user.rpc
 
+SocialRpc:
+  Etcd:
+    Host:
+      - x.x.x.x:3379
+    Key: social.rpc
+
+ImRpc:
+  Etcd:
+    Host:
+      - x.x.x.x:3379
+    Key: im.rp
+
 JwtAuth:
   AccessSecret: paipai
   AccessExpire: 8640000
