@@ -31,12 +31,14 @@ func (l *PutConversationsLogic) PutConversations(req *types.PutConversationsReq)
 	// todo: add your logic here and delete this line
 	uid := ctxdata.GetUId(l.ctx)
 	var conversationList map[string]*imclient.Conversation
-	copier.Copy(&conversationList, req.ConversationList)
+	err = copier.Copy(&conversationList, req.ConversationList)
+	if err != nil {
+		return
+	}
 
 	_, err = l.svcCtx.PutConversations(l.ctx, &imclient.PutConversationsReq{
 		UserId:           uid,
 		ConversationList: conversationList,
 	})
-	
 	return
 }

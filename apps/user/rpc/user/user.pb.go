@@ -253,6 +253,7 @@ type LoginResp struct {
 	Expire        int64                  `protobuf:"varint,2,opt,name=expire,proto3" json:"expire,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
+	Id            string
 }
 
 func (x *LoginResp) Reset() {

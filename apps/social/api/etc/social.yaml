@@ -2,6 +2,10 @@ Name: social
 Host: 0.0.0.0
 Port: 8881
 
+Redisx:
+  Host: x.x.x.x:16379
+  Pass: paipai
+
 SocialRpc:
   Etcd:
     Host:

@@ -29,6 +29,7 @@ message LoginReq {
 }
 
 message LoginResp {
+  string Id = 3;
   string Token = 1;
   int64 expire = 2;
 }
