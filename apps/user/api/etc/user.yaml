@@ -2,6 +2,10 @@ Name: user
 Host: 0.0.0.0
 Port: 8888
 
+Redisx:
+  Host: x.x.x.x:16379
+  Pass: paipai
+
 UserRpc:
   Etcd:
     Hosts:

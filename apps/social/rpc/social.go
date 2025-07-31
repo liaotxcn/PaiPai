@@ -1,6 +1,8 @@
 package main
 
 import (
+	"PaiPai/pkg/configserver"
+	"PaiPai/pkg/interceptor/rpcserver"
 	"flag"
 	"fmt"
 
@@ -9,7 +11,6 @@ import (
 	"PaiPai/apps/social/rpc/internal/svc"
 	"PaiPai/apps/social/rpc/social"
 
-	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
@@ -22,7 +23,29 @@ func main() {
 	flag.Parse()
 
 	var c config.Config
-	conf.MustLoad(*configFile, &c)
+	var configs = "social-rpc.yaml"
+	err := configserver.NewConfigServer(*configFile, configserver.NewSail(&configserver.Config{
+		ETCDEndpoints:  "x.x.x.x:3379",
+		ProjectKey:     "xxxxxx",
+		Namespace:      "user",
+		Configs:        configs,
+		ConfigFilePath: "../etc/conf",
+		// 本地测试使用以下配置
+		//ConfigFilePath: "./etc/conf",
+		LogLevel: "DEBUG",
+	})).MustLoad(&c, func(bytes []byte) error {
+		var c config.Config
+		err := configserver.LoadFromJsonBytes(bytes, &c)
+		if err != nil {
+			fmt.Println("config read err :", err)
+			return nil
+		}
+		fmt.Printf(configs, "config has changed :%+v \n", c)
+		return nil
+	})
+	if err != nil {
+		panic(err)
+	}
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
@@ -33,6 +56,8 @@ func main() {
 		}
 	})
 	defer s.Stop()
+	s.AddUnaryInterceptors(rpcserver.LogInterceptor, rpcserver.SyncLimiterInterceptor(10))
+	//s.AddUnaryInterceptors(interceptor.NewIdempotenceServer(interceptor.NewDefaultIdempotent(c.Cache[0].RedisConf)))
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()

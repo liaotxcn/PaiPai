@@ -48,6 +48,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
+				// 好友在线情况
+				Method:  http.MethodGet,
+				Path:    "/friends/online",
+				Handler: group.FriendsOnlineHandler(serverCtx),
+			},
+			{
 				// 创群
 				Method:  http.MethodPost,
 				Path:    "/group",
@@ -76,6 +82,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodGet,
 				Path:    "/group/users",
 				Handler: group.GroupUserListHandler(serverCtx),
+			},
+			{
+				// 群在线用户
+				Method:  http.MethodGet,
+				Path:    "/group/users/online",
+				Handler: group.GroupUserOnlineHandler(serverCtx),
 			},
 			{
 				// 用户申群列表

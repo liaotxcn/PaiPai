@@ -19,6 +19,11 @@ MsgReadTransfer:
   Offset: first
   Consumers: 1
 
+MsgReadHandler:
+  GroupMsgReadHandler: 1
+  GroupMsgReadRecordDelayTime: 60
+  GroupMsgReadRecordDelayCount: 2
+
 Redisx:
   Host: x.x.x.x:16379
   Type: node
@@ -35,4 +40,4 @@ SocialRpc:
     Key: social.rpc
 
 Ws:
-  Host: 127.0.0.1:10090
+  Host: x.x.x.x:10090

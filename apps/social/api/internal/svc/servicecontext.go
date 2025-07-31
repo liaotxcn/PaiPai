@@ -5,6 +5,7 @@ import (
 	"PaiPai/apps/social/api/internal/config"
 	"PaiPai/apps/social/rpc/socialclient"
 	"PaiPai/apps/user/rpc/userclient"
+	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
@@ -13,6 +14,8 @@ type ServiceContext struct {
 	UserRpc userclient.User
 	Social  socialclient.Social
 	imclient.Im
+
+	*redis.Redis
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -21,5 +24,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		UserRpc: userclient.NewUser(zrpc.MustNewClient(c.UserRpc)),
 		Social:  socialclient.NewSocial(zrpc.MustNewClient(c.UserRpc)),
 		Im:      imclient.NewIm(zrpc.MustNewClient(c.ImRpc)),
+		Redis:   redis.MustNewRedis(c.Redisx),
 	}
 }

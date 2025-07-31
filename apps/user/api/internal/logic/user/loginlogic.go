@@ -2,6 +2,7 @@ package user
 
 import (
 	"PaiPai/apps/user/rpc/user"
+	constants "PaiPai/pkg/constant"
 	"context"
 	"github.com/jinzhu/copier"
 
@@ -39,6 +40,9 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 
 	var res types.LoginResp
 	copier.Copy(&res, loginResp)
+
+	// 处理登录业务
+	l.svcCtx.Redis.HsetCtx(l.ctx, constants.REDIS_ONLINE_USER, loginResp.Id, "1")
 
 	return &res, nil
 }
