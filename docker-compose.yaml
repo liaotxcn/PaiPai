@@ -103,6 +103,43 @@ services:
     networks:
       pai-pai:
 
+# apisix-仪表盘
+  apisix-dashboard:
+    image: apache/apisix-dashboard:3.0.1-alpine
+    container_name: apisix-dashboard
+    restart: always
+    depends_on:
+      - etcd
+    volumes:
+      - ./components/apisix-dashboard/conf.yaml:/usr/local/apisix-dashboard/conf/conf.yaml
+      - ./components/apisix-dashboard/schema.json:/usr/local/apisix-dashboard/api/conf/
+    ports:
+      - "9000:9000"
+    networks:
+      pai-pai:
+
+# apisix
+  apisix:
+    image: apache/apisix:latest
+    container_name: apisix
+    restart: always
+    depends_on:
+      - etcd
+      - apisix-dashboard
+    volumes:
+      - ./components/apisix/conf/config.yaml:/usr/local/apisix/conf/config.yaml
+      - ./components/apisix/logs:/usr/local/apisix/logs
+      - ./components/apisix/cert/ssl_PLACE_HOLDER.crt:/usr/local/apisix/conf/cert/ssl_PLACE_HOLDER.crt
+      - ./components/apisix/cert/ssl_PLACE_HOLDER.key:/usr/local/apisix/conf/cert/ssl_PLACE_HOLDER.key
+    ports:
+      - "9180:9180/tcp"
+      - "9080:9080/tcp"
+      - "9091:9091/tcp"
+      - "9443:9443/tcp"
+      - "9093:9092/tcp"
+    networks:
+      pai-pai:
+
 networks:
   pai-pai:
     driver: bridge
