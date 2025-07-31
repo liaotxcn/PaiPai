@@ -1,0 +1,40 @@
+[jwt]
+expireDuration = "12h"
+secret = "abcde123456789"
+type = "refresh_token"
+refreshDuration = "168h"
+
+[mysql]
+[mysql.base]
+connMaxLifeTime = "3m"
+maxIdleConn = 30
+maxOpenConn = 60
+addr = "x.x.x.x:13306"
+name = "sail"
+pass = "paipai"
+user = "root"
+
+[etcd]
+endpoints = ["x.x.x.x:3379"]
+username = ""
+password = ""
+dialTimeout = "10s"
+dialKeepAlive = "1m"
+dialKeepAliveTimeout = "5s"
+
+[log]
+logPath = "./services.log"
+level = "DEBUG" # DEBUG INFO WARN ERROR
+stdout = true
+jsonFormat = true
+
+[server]
+serverName = "sail"
+host = ":8108"
+pprof = true
+historyListLen = 50
+
+[sdk]
+configFilePath = "."
+logLevel = "WARN"
+MergeConfig = false
