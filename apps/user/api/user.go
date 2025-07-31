@@ -64,6 +64,7 @@ func main() {
 }
 
 func Run(c config.Config) {
+	// rest.WithCors()跨域支持
 	server := rest.MustNewServer(c.RestConf, rest.WithCors())
 	defer server.Stop()
 

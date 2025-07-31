@@ -9,7 +9,7 @@ DOCKER_REPO_TEST=registry.cn-shenzhen.aliyuncs.com/xxx/${SERVER_NAME}-${SERVER_T
 # 测试版本
 VERSION_TEST=$(VERSION)
 # 编译的程序名称
-APP_NAME_TEST=easy-im-${SERVER_NAME}-${SERVER_TYPE}-test
+APP_NAME_TEST=PaiPai-${SERVER_NAME}-${SERVER_TYPE}-test
 
 # 测试下的编译文件
 DOCKER_FILE_TEST=./deploy/dockerfile/Dockerfile_${SERVER_NAME}_${SERVER_TYPE}_dev
