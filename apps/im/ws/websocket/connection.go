@@ -7,6 +7,24 @@ import (
 	"time"
 )
 
+type AckType int
+
+const (
+	NoAck AckType = iota
+	OnlyAck
+	RigorAck
+)
+
+func (t AckType) ToString() string {
+	switch t {
+	case OnlyAck:
+		return "OnlyAck"
+	case RigorAck:
+		return "RigorAck"
+	}
+	return "NoAck"
+}
+
 type Conn struct {
 	idleMu sync.Mutex
 
@@ -28,9 +46,16 @@ type Conn struct {
 }
 
 func NewConn(s *Server, w http.ResponseWriter, r *http.Request) *Conn {
-	c, err := s.upgrader.Upgrade(w, r, nil)
+	// 与前端进行交互时，需要确服务端能够接收子协议
+	var responseHeader http.Header
+	if protocol := r.Header.Get("Sec-WebSocket-Protocol"); protocol != "" {
+		responseHeader = http.Header{
+			"Sec-WebSocket-Protocol": []string{protocol},
+		}
+	}
+	c, err := s.upgrader.Upgrade(w, r, responseHeader)
 	if err != nil {
-		s.Errorf("upgrade err %v", err)
+		s.Error("upgrade err ", err)
 		return nil
 	}
 
@@ -44,8 +69,8 @@ func NewConn(s *Server, w http.ResponseWriter, r *http.Request) *Conn {
 		message:           make(chan *Message, 1),
 		done:              make(chan struct{}),
 	}
-
 	go conn.keepalive()
+
 	return conn
 }
 
@@ -55,34 +80,28 @@ func (c *Conn) appendMsgMq(msg *Message) {
 
 	// 读队列中
 	if m, ok := c.readMessageSeq[msg.Id]; ok {
-		// 已经有消息的记录，该消息已经有ack的确认
-		if len(c.readMessage) == 0 {
+		// 已经有消息的记录，该消息已经有ack确认
+		if len(c.readMessageSeq) == 0 {
 			// 队列中没有该消息
 			return
 		}
-
 		// msg.AckSeq > m.AckSeq
 		if m.AckSeq >= msg.AckSeq {
-			// 没有进行ack的确认, 重复
 			return
 		}
-
 		c.readMessageSeq[msg.Id] = msg
 		return
 	}
-	// 还没有进行ack的确认, 避免客户端重复发送多余的ack消息
+	// 还没有进行ack确认，避免客户端重复多的ack
 	if msg.FrameType == FrameAck {
 		return
 	}
-
 	c.readMessage = append(c.readMessage, msg)
 	c.readMessageSeq[msg.Id] = msg
-
 }
 
 func (c *Conn) ReadMessage() (messageType int, p []byte, err error) {
 	messageType, p, err = c.Conn.ReadMessage()
-
 	c.idleMu.Lock()
 	defer c.idleMu.Unlock()
 	c.idle = time.Time{}

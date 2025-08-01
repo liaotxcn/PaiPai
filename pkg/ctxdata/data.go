@@ -2,8 +2,8 @@ package ctxdata
 
 import "context"
 
-func GetUId(ctx context.Context) string {
-	if u, ok := ctx.Value(Identitf).(string); ok {
+func GetUId(c context.Context) string {
+	if u, ok := c.Value(IdentityKey).(string); ok {
 		return u
 	}
 	return ""

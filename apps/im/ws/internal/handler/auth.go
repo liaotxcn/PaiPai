@@ -25,23 +25,23 @@ func NewJwtAuth(svc *svc.ServiceContext) *JwtAuth {
 }
 
 func (j *JwtAuth) Auth(w http.ResponseWriter, r *http.Request) bool {
+	if tok := r.Header.Get("sec-websocket-protocol"); tok != "" {
+		r.Header.Set("Authorization", tok)
+	}
 	tok, err := j.parser.ParseToken(r, j.svc.Config.JwtAuth.AccessSecret, "")
 	if err != nil {
-		j.Errorf("parse token err %v ", err)
 		return false
-	}
 
+	}
 	if !tok.Valid {
 		return false
 	}
-
 	claims, ok := tok.Claims.(jwt.MapClaims)
 	if !ok {
 		return false
 	}
 
-	*r = *r.WithContext(context.WithValue(r.Context(), ctxdata.Identitf, claims[ctxdata.Identitf]))
-
+	*r = *r.WithContext(context.WithValue(r.Context(), ctxdata.IdentityKey, claims[ctxdata.IdentityKey]))
 	return true
 }
 

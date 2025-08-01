@@ -18,10 +18,17 @@ func Push(svc *svc.ServiceContext) websocket.HandlerFunc {
 
 		// 发送的目标
 		switch data.ChatType {
-		case constants.SingleChatType: // 私聊
-			single(srv, &data, data.RecvId)
-		case constants.GroupChatType: // 群聊
-			group(srv, &data)
+		case constants.SingleChatType:
+			err := single(srv, &data, data.RecvId)
+			if err != nil {
+				srv.Error(err)
+			}
+		case constants.GroupChatType:
+			err := group(srv, &data)
+			if err != nil {
+				srv.Error(err)
+			}
+		default:
 		}
 	}
 }
@@ -36,17 +43,18 @@ func single(srv *websocket.Server, data *ws.Push, recvId string) error {
 
 	srv.Infof("push msg %v", data)
 
-	srv.Send(websocket.NewMessage(data.SendId, &ws.Chat{
+	return srv.Send(websocket.NewMessage(data.SendId, &ws.Chat{
 		ConversationId: data.ConversationId,
 		ChatType:       data.ChatType,
 		SendTime:       data.SendTime,
 		Msg: ws.Msg{
-			MType:   data.MType,
-			Content: data.Content,
+			MsgId:       data.MsgId,
+			MType:       data.MType,
+			Content:     data.Content,
+			ReadRecords: data.ReadRecords,
 		},
-	}), rconn)
+	}), rconn[0])
 
-	return nil
 }
 
 // 群聊推送处理

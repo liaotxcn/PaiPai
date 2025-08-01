@@ -2,16 +2,16 @@ package ctxdata
 
 import "github.com/golang-jwt/jwt/v4"
 
-const Identitf = "paipai"
+const IdentityKey = "peninsula"
 
-func GetJwtToken(secreKey string, iat, seconds int64, uid string) (string, error) {
-	claims := jwt.MapClaims{}
+// GetJwtToken 生成 JWT 令牌
+func GetJwtToken(secretKey string, iat, seconds int64, uid string) (string, error) {
+	claims := make(jwt.MapClaims)
 	claims["exp"] = iat + seconds
 	claims["iat"] = iat
-	claims[Identitf] = uid
+	claims[IdentityKey] = uid
 
-	token := jwt.New(jwt.SigningMethodHS256)
-	token.Claims = claims
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	return token.SignedString([]byte(secreKey))
+	return token.SignedString([]byte(secretKey))
 }

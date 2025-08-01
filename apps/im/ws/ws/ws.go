@@ -5,7 +5,9 @@ import constants "PaiPai/pkg/constant"
 type (
 	Msg struct {
 		constants.MType `mapstructure:"mType"`
-		Content         string `mapstructure:"content"`
+		Content         string            `mapstructure:"content"`
+		MsgId           string            `mapstructure:"msgId"`
+		ReadRecords     map[string]string `mapstructure:"readRecords"`
 	}
 
 	Chat struct {
@@ -25,7 +27,7 @@ type (
 		RecvIds            []string `mapstructure:"recvIds"`
 		SendTime           int64    `mapstructure:"sendTime"`
 		MsgId              string   `mapstructure:"msgId"`
-		
+
 		ReadRecords map[string]string     `json:"readRecords"`
 		ContentType constants.ContentType `mapstructure:"contentType"`
 

@@ -36,6 +36,11 @@ func (m *MsgChatTransfer) Consume(key, value string) error {
 		return err
 	}
 
+	// 记录数据
+	if err := m.addChatLog(ctx, msgId, &data); err != nil {
+		return err
+	}
+
 	return m.Transfer(ctx, &ws.Push{
 		ConversationId: data.ConversationId,
 		ChatType:       data.ChatType,
@@ -63,6 +68,7 @@ func (m *MsgChatTransfer) addChatLog(ctx context.Context, msgId primitive.Object
 		SendTime:       data.SendTime,
 	}
 
+	// 设置发送者本人已读
 	readRecords := bitmap.NewBitmap(0)
 	readRecords.Set(chatLog.SendId)
 	chatLog.ReadRecords = readRecords.Export()
