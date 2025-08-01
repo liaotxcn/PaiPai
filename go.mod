@@ -4,6 +4,7 @@ go 1.24.0
 
 require (
 	github.com/HYY-yu/sail-client v0.5.2
+	github.com/bwmarrin/snowflake v0.3.0
 	github.com/edwingeng/wuid v1.0.0
 	github.com/golang-jwt/jwt/v4 v4.5.2
 	github.com/gorilla/websocket v1.5.0
