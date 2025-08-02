@@ -27,12 +27,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 }
 
 func (svc *ServiceContext) SetRootToken() error {
-	// 生成jwt
+	// 生成jwt,写入到redis
 	systemToken, err := ctxdata.GetJwtToken(svc.Config.Jwt.AccessSecret, time.Now().Unix(), 999999999, constants.SYSTEM_ROOT_UID)
 	if err != nil {
 		return err
 	}
-	// 写入到redis
-
 	return svc.Redis.Set(constants.REDIS_SYSTEM_ROOT_TOKEN, systemToken)
 }

@@ -21,6 +21,6 @@ func NewDBErr() error {
 	return errors.New(DB_ERROR, ErrMsg(DB_ERROR))
 }
 
-func NewInternalErr() error {
-	return errors.New(SERVER_COMMON_ERROR, ErrMsg(SERVER_COMMON_ERROR))
+func NewServerCommonErr() error {
+	return New(ServerCommonError, ErrMsg(ServerCommonError))
 }

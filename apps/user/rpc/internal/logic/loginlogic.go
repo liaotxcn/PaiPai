@@ -47,7 +47,7 @@ func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginResp, error) {
 	}
 
 	// 密码验证
-	if !encrypt.ValidatePassword(in.Password, userEntity.Password.String) {
+	if !encrypt.ValidatePassword(in.Password, userEntity.Password) {
 		return nil, errors.WithStack(ErrUserPwdError)
 	}
 
