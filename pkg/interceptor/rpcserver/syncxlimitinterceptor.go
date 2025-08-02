@@ -3,12 +3,14 @@ package rpcserver
 import (
 	"context"
 	"github.com/zeromicro/go-zero/core/logx"
-	"github.com/zeromicro/go-zero/core/syncx"
+	"github.com/zeromicro/go-zero/core/syncx" // syncx限流库
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"net/http"
 )
+
+// syncx限流
 
 func SyncLimiterInterceptor(maxCount int) grpc.UnaryServerInterceptor {
 	l := syncx.NewLimit(maxCount)
