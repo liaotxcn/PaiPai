@@ -14,25 +14,6 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type AckType int
-
-const (
-	NoAck AckType = iota
-	OnlyAck
-	RigorAck
-)
-
-func (t AckType) ToString() string {
-	switch t {
-	case OnlyAck:
-		return "OnlyAck"
-	case RigorAck:
-		return "RigorAck"
-	}
-
-	return "NoAck"
-}
-
 type Server struct {
 	sync.RWMutex
 
@@ -56,11 +37,16 @@ func NewServer(addr string, opts ...ServerOptions) *Server {
 	opt := newServerOptions(opts...)
 
 	return &Server{
-		routes:   make(map[string]HandlerFunc),
-		addr:     addr,
-		patten:   opt.patten,
-		opt:      &opt,
-		upgrader: websocket.Upgrader{},
+		routes: make(map[string]HandlerFunc),
+		addr:   addr,
+		patten: opt.patten,
+		opt:    &opt,
+		upgrader: websocket.Upgrader{
+			// 跨域支持
+			CheckOrigin: func(r *http.Request) bool {
+				return true
+			},
+		},
 
 		authentication: opt.Authentication,
 
@@ -83,23 +69,21 @@ func (s *Server) ServerWs(w http.ResponseWriter, r *http.Request) {
 	if conn == nil {
 		return
 	}
-	//conn, err := s.upgrader.Upgrade(w, r, nil)
-	//if err != nil {
-	//	s.Errorf("upgrade err %v", err)
-	//	return
-	//}
-
 	if !s.authentication.Auth(w, r) {
-		//conn.WriteMessage(websocket.TextMessage, []byte(fmt.Sprint("不具备访问权限")))
-		s.Send(&Message{FrameType: FrameData, Data: fmt.Sprint("不具备访问权限")}, conn)
-		conn.Close()
+		err := s.Send(&Message{
+			Data: fmt.Sprint("No access rights"),
+		}, conn)
+		if err != nil {
+			s.Error("Send message err", err)
+		}
+		s.Info("authentication failed")
 		return
 	}
 
-	// 记录连接
+	// 读取消息，完成请求
 	s.addConn(conn, r)
 
-	// 处理连接
+	// 建立连接
 	go s.handlerConn(conn)
 }
 

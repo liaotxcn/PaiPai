@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="excludedPrintfFunctions.xml">
+    <option name="excludedDescriptors">
+      <set>
+        <PrintfFuncDescriptorState>
+          <option name="importPath" value="github.com/pkg/errors" />
+          <option name="name" value="Wrapf" />
+        </PrintfFuncDescriptorState>
+      </set>
+    </option>
+    <option name="excludedNames">
+      <set>
+        <option value="Wrapf" />
+      </set>
+    </option>
+  </component>
+</project>

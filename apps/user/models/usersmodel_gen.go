@@ -9,6 +9,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
@@ -44,17 +45,22 @@ type (
 	}
 
 	Users struct {
-		Id        string         `db:"id"`
-		Avatar    string         `db:"avatar"`
-		Nickname  string         `db:"nickname"`
-		Phone     string         `db:"phone"`
-		Password  sql.NullString `db:"password"`
-		Status    sql.NullInt64  `db:"status"`
-		Sex       sql.NullInt64  `db:"sex"`
-		CreatedAt sql.NullTime   `db:"created_at"`
-		UpdatedAt sql.NullTime   `db:"updated_at"`
-	}
+	Id        string         `db:"id"`
+	Avatar    string         `db:"avatar"`
+	Nickname  string         `db:"nickname"`
+	Phone     string         `db:"phone"`
+	Password  string `db:"password"`
+	Status    *int8  `db:"status"`
+	Sex       *int8  `db:"sex"`
+	CreatedAt time.Time   `db:"created_at"`
+	UpdatedAt time.Time   `db:"updated_at"`
+}
 )
+
+func (u Users) Error() string {
+	//TODO implement me
+	panic("implement me")
+}
 
 func newUsersModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...cache.Option) *defaultUsersModel {
 	return &defaultUsersModel{

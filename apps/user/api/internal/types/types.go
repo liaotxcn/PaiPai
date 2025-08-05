@@ -35,6 +35,7 @@ type User struct {
 }
 
 type UserInfoReq struct {
+	UserId string `json:"user_id"`
 }
 
 type UserInfoResp struct {

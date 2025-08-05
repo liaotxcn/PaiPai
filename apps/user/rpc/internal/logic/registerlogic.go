@@ -4,9 +4,9 @@ import (
 	"PaiPai/apps/user/models"
 	"PaiPai/pkg/ctxdata"
 	"PaiPai/pkg/encrypt"
+	"PaiPai/pkg/utils"
 	"PaiPai/pkg/wuid"
 	"context"
-	"database/sql"
 	"errors"
 	"time"
 
@@ -53,10 +53,8 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, erro
 		Avatar:   in.Avatar,
 		Nickname: in.Nickname,
 		Phone:    in.Phone,
-		Sex: sql.NullInt64{
-			Int64: int64(in.Sex),
-			Valid: true,
-		},
+		Status:   utils.ConvertToInt8(0),
+		Sex:      utils.ConvertToInt8(in.Sex),
 	}
 
 	if len(in.Password) > 0 {
@@ -64,10 +62,7 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, erro
 		if err != nil {
 			return nil, err
 		}
-		userEntity.Password = sql.NullString{
-			String: string(genPassword),
-			Valid:  true,
-		}
+		userEntity.Password = string(genPassword)
 	}
 
 	_, err = l.svcCtx.UsersModel.Insert(l.ctx, userEntity)
