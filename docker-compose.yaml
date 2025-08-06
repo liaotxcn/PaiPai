@@ -167,6 +167,41 @@ services:
     networks:
       pai-pai:
 
+# elasticsearch
+  elasticsearch:
+    image: elasticsearch:7.17.4
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./components/elasticsearch/data:/usr/share/elasticsearch/data
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - 'cluster.name=elasticsearch'
+      - 'discovery.type=single-node'
+      - 'ES_JAVA_OPTS=-Xms1024m -Xmx1024m'
+    networks:
+      pai-pai:
+
+# kibana
+  kibana:
+    image: kibana:7.17.4
+    container_name: kibana
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./components/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - '5601:5601'
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    networks:
+      pai-pai:
+
 networks:
   pai-pai:
     driver: bridge
