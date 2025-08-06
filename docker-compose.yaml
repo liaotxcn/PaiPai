@@ -202,6 +202,43 @@ services:
     networks:
       pai-pai:
 
+# prometheus:
+  prometheus:
+    image: prom/prometheus:v2.28.1
+    container_name: prometheus
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - ./components/prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./components/prometheus/data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    restart: always
+    user: root
+    ports:
+      - 9090:9090
+    networks:
+      pai-pai:
+
+# grafana
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - ./components/grafana/config/datasource.yaml:/etc/grafana/provisioning/datasource.yaml
+      - ./components/grafana/data:/var/lib/grafana
+    container_name: grafana
+    ports:
+      - "3001:3000"
+      - 10007:10007
+    depends_on:
+      - prometheus
+    privileged: true
+    user: root
+    networks:
+      pai-pai:
+        -
+
 networks:
   pai-pai:
     driver: bridge
