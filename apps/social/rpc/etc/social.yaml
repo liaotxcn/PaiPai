@@ -12,3 +12,12 @@ Cache:
   - Host: x.x.x.x:16379
     Type: node
     Pass: paipai
+
+JwtAuth:
+  AccessSecret: paipai
+  AccessExpire: 864000
+
+telemetry:
+  batcher: jaeger
+  endpoint: http://x.x.x.x:14268/api/traces
+  name: social.rpc

@@ -1,0 +1,12 @@
+scrape_configs:
+  - job_name: user-api
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - x.x.x.x:7011
+
+  - job_name: user-rpc
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - x.x.x.x:7010

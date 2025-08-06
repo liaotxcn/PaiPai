@@ -22,3 +22,8 @@ Jwt:
   AccessSecret: paipai
   AccessExpire: 8640000
 
+telemetry:
+  batcher: jaeger
+  endpoint: http://x.x.x.x:14268/api/traces
+  name: user.rpc
+

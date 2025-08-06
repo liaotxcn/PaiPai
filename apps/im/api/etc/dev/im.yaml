@@ -22,5 +22,6 @@ ImRpc:
 
 JwtAuth:
   AccessSecret: paipai
+  AccessExpire: 864000
 
 

@@ -140,6 +140,105 @@ services:
     networks:
       pai-pai:
 
+# sail
+  sail:
+    image: ccr.ccs.tencentyun.com/hyy-yu/sail:latest
+    container_name: sail
+    ports:
+      - "8108:8108"
+    volumes:
+      - "./components/sail/compose-cfg.toml:/app/cfg.toml"
+    restart: always
+    platform: linux/arm64
+
+# jeager
+  jeager:
+    image: jaegertracing/all-in-one:latest
+    container_name: jeager
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "9411:9411"
+    restart: always
+    networks:
+      pai-pai:
+
+# elasticsearch
+  elasticsearch:
+    image: elasticsearch:7.17.4
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./components/elasticsearch/data:/usr/share/elasticsearch/data
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - 'cluster.name=elasticsearch'
+      - 'discovery.type=single-node'
+      - 'ES_JAVA_OPTS=-Xms1024m -Xmx1024m'
+    networks:
+      pai-pai:
+
+# kibana
+  kibana:
+    image: kibana:7.17.4
+    container_name: kibana
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./components/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - '5601:5601'
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    networks:
+      pai-pai:
+
+# prometheus:
+  prometheus:
+    image: prom/prometheus:v2.28.1
+    container_name: prometheus
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - ./components/prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./components/prometheus/data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    restart: always
+    user: root
+    ports:
+      - 9090:9090
+    networks:
+      pai-pai:
+
+# grafana
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - ./components/grafana/config/datasource.yaml:/etc/grafana/provisioning/datasource.yaml
+      - ./components/grafana/data:/var/lib/grafana
+    container_name: grafana
+    ports:
+      - "3001:3000"
+      - 10007:10007
+    depends_on:
+      - prometheus
+    privileged: true
+    user: root
+    networks:
+      pai-pai:
+        -
+
 networks:
   pai-pai:
     driver: bridge

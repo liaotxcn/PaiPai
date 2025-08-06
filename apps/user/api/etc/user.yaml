@@ -27,3 +27,8 @@ ImRpc:
 JwtAuth:
   AccessSecret: paipai
   AccessExpire: 8640000
+
+Prometheus:
+  Host: 0.0.0.0
+  Port: 7888
+  Path: /metrics

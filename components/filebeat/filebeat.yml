@@ -1,0 +1,17 @@
+# 输入
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /root/paipai/components/apisix/logs/access.log
+    fields_under_root: true
+    fields:
+      type: apisix
+
+# 输出
+output.console:
+  pretty: true
+  enable: true
+
+# output.logstash:
+#   hosts: ["x.x.x.x:5044"]
