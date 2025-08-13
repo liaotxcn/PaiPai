@@ -9,7 +9,7 @@
 ---
 
 ## 🚀 整体架构
-<img width="1812" height="829" alt="image" src="https://github.com/user-attachments/assets/093572be-3207-4c75-98e2-08f563a93b12" />
+<img width="2186" height="975" alt="image" src="https://github.com/user-attachments/assets/a2feb290-baf0-4490-8ccd-ee48b6d094d4" />
 
 ---
 
@@ -21,7 +21,8 @@ PaiPai/
 │   ├── im/          # 即时通信服务
 │   ├── social/      # 社交服务
 │   ├── task/        # 事务服务
-│   └── user/        # 用户服务
+│   ├── user/        # 用户服务
+│   └── eino_chat/   # EinoService
 ├── components/      # API网关
 ├── deploy/          # Docker部署&&运行脚本
 ├── pkg/             # 工具包
@@ -44,6 +45,7 @@ PaiPai/
 ---
 
 ### 功能逐步完善中...
+
 
 
 
