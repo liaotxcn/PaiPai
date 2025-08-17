@@ -1,0 +1,38 @@
+# 添加 DeepSeek API 密钥
+env:
+  DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+
+# GitHub Actions 工作流配置
+name: DeepSeek Code Review
+
+# 触发条件：在代码推送(push)或拉取请求(pull_request)时运行
+on: [push, pull_request]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest    # 指定运行环境为最新版Ubuntu(其他系统均可)
+
+    # 工作流程步骤
+    steps:
+      # 第一步：检出代码库，使用官方checkout动作获取代码
+      - uses: actions/checkout@v2
+      # 第二步：运行DeepSeek代码审查
+      - name: Run DeepSeek Review
+        # 执行多行shell命令
+        # 查找所有.go文件并逐个处理，打印当前审查的文件名
+        # 读取文件内容并使用jq进行JSON编码(-R读取原始输入，-s将所有输入作为单个字符串)
+        # 发送POST请求到DeepSeek API进行代码审查，使用jq处理API响应，格式化输出为GitHub Actions的警告格式
+        run: |
+          for file in $(find . -name '*.go'); do  
+            echo "Reviewing $file..."
+            code=$(cat "$file" | jq -Rs .)
+            curl -X POST "https://api.deepseek.com/v1/code/review" \
+              -H "Content-Type: application/json" \
+              -d "{\"code\":$code,\"language\":\"go\"}" \
+              | jq '.issues[] | "::warning file='$file',line=\(.line)::\(.message)"'
+          done
+
+# 使用建议
+# curl命令中添加认证头  -H "Authorization: Bearer $DEEPSEEK_API_KEY"
+# 限制审查范围(只审查修改过的.go文件)  for file in $(git diff --name-only HEAD^ | grep '\.go$'); do
+# 添加错误处理  curl ... || echo "Failed to review $file"
