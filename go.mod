@@ -19,6 +19,7 @@ require (
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.21.1
+	github.com/rabbitmq/amqp091-go v1.10.0
 	github.com/redis/go-redis/v9 v9.11.0
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
 	github.com/zeromicro/go-queue v1.2.2
