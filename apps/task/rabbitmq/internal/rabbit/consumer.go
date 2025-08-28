@@ -11,11 +11,12 @@ import (
 type MessageHandler func(ctx context.Context, message []byte) error
 
 type Consumer struct {
-	rabbitMQ   *RabbitMQ
-	queue      string
-	exchange   string
-	routingKey string
-	handler    MessageHandler
+	rabbitMQ     *RabbitMQ
+	queue        string
+	exchange     string
+	routingKey   string
+	handler      MessageHandler
+	RetryHandler func(ctx context.Context, delivery amqp091.Delivery, handler func(ctx context.Context, msg amqp091.Delivery) error) error
 }
 
 func NewConsumer(rabbitMQ *RabbitMQ, queue, exchange, routingKey string, handler MessageHandler) *Consumer {
