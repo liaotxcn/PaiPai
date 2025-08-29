@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package eino;
+option  go_package = "./eino";
+
+// ---------------- 基础模型 ----------------
+// 统一响应
+message BaseResp {
+  int32  code = 1;
+  string msg  = 2;
+}
+
+// 单条消息
+message Message {
+  string role    = 1;
+  string content = 2;
+}
+
+// ---------------- 单次对话 ----------------
+message ChatCompletionReq {
+  string           model    = 1;
+  repeated Message messages = 2;
+}
+
+message ChatCompletionResp {
+  BaseResp base  = 1;
+  string   reply = 2;
+}
+
+// ---------------- 流式对话 ----------------
+message ChatCompletionStreamReq {
+  string           model    = 1;
+  repeated Message messages = 2;
+}
+
+// 每帧返回
+message ChatCompletionStreamResp {
+  BaseResp base  = 1;
+  string   chunk = 2;  // 增量内容
+}
+
+// ---------------- Agent 调用 ----------------
+message InvokeAgentReq {
+  string agent_id = 1;
+  bytes  input    = 2;  // 任意 JSON，由 Agent 定义
+}
+
+message InvokeAgentResp {
+  BaseResp base   = 1;
+  bytes    output = 2;  // Agent 返回的 JSON
+}
+
+// ---------------- 服务定义 ----------------
+service Eino {
+  // 单次对话
+  rpc ChatCompletion (ChatCompletionReq) returns (ChatCompletionResp);
+
+  // 流式对话
+  rpc ChatCompletionStream (ChatCompletionStreamReq)
+      returns (stream ChatCompletionStreamResp);
+
+  // 调用已注册的 Agent
+  rpc InvokeAgent (InvokeAgentReq) returns (InvokeAgentResp);
+}
