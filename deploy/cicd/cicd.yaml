@@ -1,0 +1,93 @@
+# ci/cd 自动化工作流
+
+name: Docker CI/CD
+
+# 工作流触发时机（何时运行）
+on:
+  push:   # 监听push推送
+    branches: [ main ]   # 仅当推送发生在 'main' 分支时触发
+
+# 全局环境变量
+env:
+  REGISTRY: xxx     # 定义容器镜像要推送到的仓库地址
+  IMAGE_NAME: ${{ github.repository }}   # 镜像名称
+  CONTAINER_NAME: paipai  # 要运行docker容器名称
+
+# 定义工作流中的任务，每个 job 在独立的虚拟环境中运行
+jobs:
+  test:
+    # 指定运行此 job 的虚拟机环境，如最新的 Ubuntu 系统
+    runs-on: ubuntu-latest
+    # 定义此 job 中要按顺序执行的一系列步骤
+    steps:
+      # 步骤1：检出代码到虚拟机 （uses使用一个预定义动作 checkout@v4 检出代码）
+      - uses: actions/checkout@v4
+      # 步骤2：设置环境
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'   # Node.js版本
+      # 步骤3：安装依赖
+      - run: npm ci
+      # 步骤4：运行测试脚本（执行 package.json 中定义的 test 脚本）
+      - run: npm test
+
+# job2：构建和推送 Docker 镜像
+  build-and-push:
+    # 指定此 job 依赖于 test job，只有当 test job 成功完成后才会运行
+    needs: test
+    runs-on: ubuntu-latest
+    # 设置特殊权限
+    permissions:
+      contents: read    # 只需要读取代码库内容的权限
+      packages: write   # 需要向 GitHub Packages 写入的权限（用于推送镜像）
+
+    steps:
+      - uses: actions/checkout@v4  # 检出代码（获取Dockerfile）
+
+        # 登录到 GitHub Container Registry
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}  # 登录的容器注册表地址
+          username: ${{ github.actor }}  # 使用github出发工作流的用户
+          password: ${{ secrets.GITHUB_TOKEN }}   # 使用 GitHub 自动生成的令牌，有推送包的权限
+
+      # 构建并推送 Docker 镜像
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .  # 构建上下文路径（.表当前目录【需包含Dockerfile的目录】）
+          push: true  # 构建成功后推送镜像至镜像仓库
+          # 打上标签：latest（最新稳定版）
+          # 使用 Git 提交 SHA 的前缀作为标签，确保每次构建都有唯一标识，便于追踪和回滚
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+# job3：部署至服务器
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4   # 检出代码 获取 docker-compose 文件
+      # SSH连接服务器部署脚本
+      - name: Deploy to Server via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}   # 服务器地址 IP/域名
+          username: ${{ secrets.SSH_USERNAME }}  # ssh登录用户名
+          key: ${{ secrets.SSH_PRIVATE_KEY }}  # ssh私钥
+          # 远程服务器执行的脚本命令内容
+          script: |
+            # 1. 登录到容器仓库
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
+
+            # 2. 拉取最新的镜像
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+            # 3. 使用 Compose 重新启动服务（自动处理停止、删除旧容器、启动新容器）
+            docker-compose -f docker-compose.prod.yml up -d
+
+            # 3. 执行其他命令，如清理(可选：清理旧的悬虚镜像，避免占用磁盘空间)
+            docker image prune -f
