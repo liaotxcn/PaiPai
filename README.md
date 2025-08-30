@@ -14,6 +14,51 @@
 
 ---
 
+## 🛠️ 核心技术栈
+| 类别 | 技术组件 | 推荐版本 | 使用说明 |
+|------|----------|----------|----------|
+| **编程语言** | Golang | 1.21+ | 后端主要开发语言 |
+| **微服务框架** | GoZero | 1.8.5 | 微服务开发框架 |
+| **数据库** | MySQL | 8.0+ | 关系型数据存储 |
+|  | Redis | 7.0+ | 缓存、会话管理 |
+|  | MongoDB | 6.0+ | 文档型数据存储 |
+| **消息队列** | Kafka | 3.5+ | 高吞吐量消息处理 |
+|  | RabbitMQ | 3.11+ | 复杂路由消息队列 |
+| **服务发现** | ETCD | 3.5+ | 服务发现与配置管理 |
+| **API网关** | Apisix | 3.7+ | API网关与流量管理 |
+| **监控观测** | Prometheus | latest | 指标收集与监控 |
+|  | Grafana | latest | 数据可视化仪表板 |
+|  | Jaeger | latest | 分布式链路追踪 |
+| **日志系统** | Elasticsearch | latest | 日志存储与检索 |
+|  | Logstash | latest | 日志收集与处理 |
+|  | Kibana | latest | 日志可视化分析 |
+| **容器编排** | Docker | latest | 容器运行时 |
+|  | Kubernetes | latest | 容器编排管理 |
+| **AI应用/集成** | DeepSeek | - | 智能代码审查 |
+|  | Eino | latest | 大模型应用框架 |
+
+## 🏗️架构层次
+| 架构层 | 技术组件 | 功能描述 |
+|--------|----------|----------|
+| **接入层** | Apisix, Docker, Kubernetes | 流量接入、负载均衡、容器化管理 |
+| **服务层** | Golang, GoZero, ETCD | 业务逻辑处理、服务发现与注册 |
+| **数据层** | MySQL, Redis, MongoDB | 数据存储、缓存、持久化 |
+| **消息层** | Kafka, RabbitMQ | 异步消息处理、系统解耦 |
+| **观测层** | Prometheus, Grafana, Jaeger, ELK | 系统监控、日志分析、链路追踪 |
+| **智能层** | DeepSeek, Eino | AI大模型集成、智能业务处理 |
+
+## 🔄系统数据流
+| 数据流向 | 技术组件 | 协议/接口 |
+|----------|----------|----------|
+| **客户端请求** | Apisix → GoZero微服务 | HTTP/HTTPS/WebSocket |
+| **服务间通信** | 微服务间调用 | gRPC/HTTP + ETCD服务发现 |
+| **消息处理** | Kafka/RabbitMQ → 业务处理 | AMQP/MQTT/自定义 |
+| **数据持久化** | → MySQL/Redis/MongoDB | SQL/NoSQL接口 |
+| **监控数据** | → Prometheus/ELK | 指标采集/日志收集 |
+| **AI大模型集成** | → DeepSeek/Eino | REST API/gRPC |
+
+---
+
 ## 📂 项目结构  
 
 ```plaintext
@@ -63,7 +108,8 @@ PaiPai/
  
 ---
 
-### 功能逐步完善中...
+### <div align="center"> <strong>✨ 持续更新完善中... ✨</strong> </div>
+
 
 
 
