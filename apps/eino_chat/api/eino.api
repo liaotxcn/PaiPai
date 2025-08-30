@@ -1,0 +1,64 @@
+syntax = "v1"
+
+info (
+	title:   "Eino AI Service"
+	version: "1.0"
+)
+
+type BaseResp {
+	Code int    `json:"code"`
+	Msg  string `json:"msg,omitempty"`
+}
+
+type Message {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
+type ChatCompletionReq {
+	Model    string    `json:"model"`
+	Messages []Message `json:"messages"`
+}
+
+type ChatCompletionResp {
+	BaseResp BaseResp `json:"BaseResp"`
+	Reply    string   `json:"reply"`
+}
+
+type ChatStreamReq {
+	Model    string    `json:"model"`
+	Messages []Message `json:"messages"`
+}
+
+type ChatStreamResp {
+	BaseResp BaseResp `json:"BaseResp"`
+	Chunk    string   `json:"chunk"`
+}
+
+type AgentInvokeReq {
+	AgentID string      `json:"agent_id"`
+	Input   interface{} `json:"input"`
+}
+
+type AgentInvokeResp {
+	BaseResp BaseResp    `json:"BaseResp"`
+	Output   interface{} `json:"output"`
+}
+
+@server (
+	prefix: /api/v1
+)
+service eino-api {
+	@doc "聊天补全"
+	@handler ChatCompletion
+	post /chat/completions (ChatCompletionReq) returns (ChatCompletionResp)
+
+	@doc "聊天流式输出"
+	@handler ChatStream
+	post /chat/stream (ChatStreamReq) returns (ChatStreamResp)
+
+	@doc "调用智能体"
+	@handler AgentInvoke
+	post /agent/invoke (AgentInvokeReq) returns (AgentInvokeResp)
+}
+
