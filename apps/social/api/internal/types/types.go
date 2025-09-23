@@ -65,6 +65,7 @@ type GroupCreateReq struct {
 }
 
 type GroupCreateResp struct {
+	GroupId string `json:"group_id,omitempty"`
 }
 
 type GroupListRep struct {
