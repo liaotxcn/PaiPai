@@ -4,7 +4,7 @@ import (
 	"PaiPai/apps/user/models"
 	"PaiPai/pkg/xerr"
 	"context"
-	"fmt"
+
 	"github.com/pkg/errors"
 
 	"PaiPai/apps/user/rpc/internal/svc"
@@ -28,43 +28,68 @@ func NewFindUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FindUser
 }
 
 func (l *FindUserLogic) FindUser(in *user.FindUserReq) (*user.FindUserResp, error) {
-	// todo: add your logic here and delete this line
-
-	var users = make([]models.Users, 1) // 第一个位置留给 phone、name 查询
-	var userEntities []*user.UserEntity
+	var users []models.Users
 
 	if in.Phone != "" {
-		err, _ := l.svcCtx.UsersModel.FindByPhone(l.ctx, in.Phone)
+		// 根据手机号查找单个用户
+		user, err := l.svcCtx.UsersModel.FindByPhone(l.ctx, in.Phone)
 		if err != nil {
-			return nil, errors.Wrapf(err, "failed to find api by phone: %s", in.Phone)
+			if err != models.ErrNotFound {
+				return nil, errors.Wrapf(err, "failed to find user by phone: %s", in.Phone)
+			}
+			// 用户不存在时返回空数组
+			users = []models.Users{}
+		} else {
+			users = []models.Users{*user}
 		}
 	} else if len(in.Ids) > 0 {
-		users = nil
-		err, _ := l.svcCtx.UsersModel.ListByIds(l.ctx, in.Ids)
+		// 根据ID列表查找多个用户
+		userList, err := l.svcCtx.UsersModel.ListByIds(l.ctx, in.Ids)
 		if err != nil {
-			fmt.Printf("\n\n\n %v \n\n\n", err)
+			l.Errorw("failed to find users by IDs", logx.Field("error", err), logx.Field("ids", in.Ids))
 			return nil, errors.Wrapf(err, "failed to find users by IDs: %v", in.Ids)
 		}
+		// 转换为值类型切片
+		users = make([]models.Users, 0, len(userList))
+		for _, u := range userList {
+			users = append(users, *u)
+		}
 	} else if in.Name != "" {
-		err, _ := l.svcCtx.UsersModel.ListByName(l.ctx, in.Name)
+		// 根据用户名查找多个用户
+		userList, err := l.svcCtx.UsersModel.ListByName(l.ctx, in.Name)
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to find users by name: %s", in.Name)
+		}
+		// 转换为值类型切片
+		users = make([]models.Users, 0, len(userList))
+		for _, u := range userList {
+			users = append(users, *u)
 		}
 	} else {
 		return nil, errors.WithStack(xerr.ParamError)
 	}
 
-	userEntities = make([]*user.UserEntity, len(users))
+	// 转换为UserEntity响应
+	userEntities := make([]*user.UserEntity, 0, len(users))
+	for _, u := range users {
+		// 安全地处理可能为nil的指针字段
+		status := int32(0)
+		if u.Status != nil {
+			status = int32(*u.Status)
+		}
+		sex := int32(0)
+		if u.Sex != nil {
+			sex = int32(*u.Sex)
+		}
 
-	for index, u := range users {
-		userEntities[index] = &user.UserEntity{
+		userEntities = append(userEntities, &user.UserEntity{
 			Id:       u.Id,
 			Avatar:   u.Avatar,
 			Nickname: u.Nickname,
 			Phone:    u.Phone,
-			Status:   int32(*u.Status),
-			Sex:      int32(*u.Sex),
-		}
+			Status:   status,
+			Sex:      sex,
+		})
 	}
 
 	return &user.FindUserResp{User: userEntities}, nil
