@@ -5,6 +5,7 @@ import (
 	"PaiPai/apps/social/rpc/socialclient"
 	"PaiPai/apps/user/rpc/user"
 	"PaiPai/pkg/bitmap"
+	constants "PaiPai/pkg/constant"
 	"context"
 
 	"PaiPai/apps/im/api/internal/svc"
@@ -31,7 +32,7 @@ func NewGetChatLogReadRecordsLogic(ctx context.Context, svcCtx *svc.ServiceConte
 func (l *GetChatLogReadRecordsLogic) GetChatLogReadRecords(req *types.GetChatLogReadRecordsReq) (resp *types.GetChatLogReadRecordsResp, err error) {
 	// todo: add your logic here and delete this line
 
-	chatLogs, err := l.svcCtx.ImClient.GetChatLog(l.ctx, &im.GetChatLogReq{
+	chatLogs, err := l.svcCtx.Im.GetChatLog(l.ctx, &im.GetChatLogReq{
 		MsgId: req.MsgId,
 	})
 	if err != nil || len(chatLogs.List) == 0 {
@@ -46,23 +47,26 @@ func (l *GetChatLogReadRecordsLogic) GetChatLogReadRecords(req *types.GetChatLog
 	)
 
 	// 分别设置已读未读
-	switch status.ChatType(chatLog.ChatType) {
-	case status.SingleChatType:
+	switch constants.ChatType(chatLog.ChatType) {
+	case constants.SingleChatType:
 		if len(chatLog.ReadRecords) == 0 || chatLog.ReadRecords[0] == 0 {
 			unReads = []string{chatLog.RecvId}
 		} else {
 			reads = append(reads, chatLog.RecvId)
 		}
 		ids = []string{chatLog.RecvId, chatLog.SendId}
-	case status.GroupChatType:
-		groupUsers, err := l.svcCtx.SocialClient.GroupUsers(l.ctx, &socialclient.GroupUsersReq{
+	case constants.GroupChatType:
+		groupUsers, err := l.svcCtx.Social.GroupUsers(l.ctx, &socialclient.GroupUsersReq{
 			GroupId: chatLog.RecvId,
 		})
 		if err != nil {
 			return nil, err
 		}
 
-		bitmaps := bitmap.Lood(chatLog.ReadRecords)
+		bitmaps, err := bitmap.Load(chatLog.ReadRecords)
+		if err != nil {
+			return nil, err
+		}
 		for _, members := range groupUsers.List {
 			ids = append(ids, members.UserId)
 
@@ -70,7 +74,11 @@ func (l *GetChatLogReadRecordsLogic) GetChatLogReadRecords(req *types.GetChatLog
 				continue
 			}
 
-			if bitmaps.IsSet(members.UserId) {
+			isSet, err := bitmaps.IsSet(members.UserId)
+			if err != nil {
+				return nil, err
+			}
+			if isSet {
 				reads = append(reads, members.UserId)
 			} else {
 				unReads = append(unReads, members.UserId)
@@ -78,15 +86,15 @@ func (l *GetChatLogReadRecordsLogic) GetChatLogReadRecords(req *types.GetChatLog
 		}
 	}
 
-	userEntities, err := l.svcCtx.UserClient.FindUser(l.ctx, &user.FindUserReq{
+	userEntities, err := l.svcCtx.UserRpc.FindUser(l.ctx, &user.FindUserReq{
 		Ids: ids,
 	})
 	if err != nil {
 		return nil, err
 	}
-	userEntitySet := make(map[string]*user.UserEntity, len(userEntities.Users))
-	for i, entity := range userEntities.Users {
-		userEntitySet[entity.Id] = userEntities.Users[i]
+	userEntitySet := make(map[string]*user.UserEntity, len(userEntities.User))
+	for i, entity := range userEntities.User {
+		userEntitySet[entity.Id] = userEntities.User[i]
 	}
 
 	// 设置手机号码
