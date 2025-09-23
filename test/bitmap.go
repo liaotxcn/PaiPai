@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 // 位运算
-func main() {
+func bitmap() {
 	a := 7
 	fmt.Printf("%b,%v \n", a, a)
 	b := a << 2

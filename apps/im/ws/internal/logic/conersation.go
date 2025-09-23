@@ -1,7 +1,7 @@
 package logic
 
 import (
-	"PaiPai/apps/im/models"
+	model "PaiPai/apps/im/immodels"
 	"PaiPai/apps/im/ws/internal/svc"
 	"PaiPai/apps/im/ws/websocket"
 	"PaiPai/apps/im/ws/ws"
@@ -31,7 +31,7 @@ func (l *Conversation) SingleChat(data *ws.Chat, userId string) error {
 
 	time.Sleep(time.Minute)
 	// 记录消息
-	chatLog := models.ChatLog{
+	chatLog := model.ChatLog{
 		ConversationId: data.ConversationId,
 		SendId:         userId,
 		RecvId:         data.RecvId,

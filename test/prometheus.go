@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"net/http"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 // prometheus 测试实例
 
-func main() {
+func prometheus_test() {
 	// 自定义监控指标(项目程序内部)
 	temp := prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "tests",

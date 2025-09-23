@@ -10,6 +10,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -23,12 +24,12 @@ func NewMsgChatTransfer(svc *svc.ServiceContext) *MsgChatTransfer {
 	}
 }
 
-func (m *MsgChatTransfer) Consume(key, value string) error {
+func (m *MsgChatTransfer) Consume(ctx context.Context, key, value string) error {
+
 	fmt.Println("key : ", key, " value : ", value)
 
 	var (
 		data  mq.MsgChatTransfer
-		ctx   = context.Background()
 		msgId = primitive.NewObjectID()
 	)
 
@@ -69,14 +70,34 @@ func (m *MsgChatTransfer) addChatLog(ctx context.Context, msgId primitive.Object
 	}
 
 	// 设置发送者本人已读
-	readRecords := bitmap.NewBitmap(0)
-	readRecords.Set(chatLog.SendId)
+	readRecords, err := bitmap.NewBitmap(0)
+	if err != nil {
+		return err
+	}
+	if err := readRecords.Set(chatLog.SendId); err != nil {
+		return err
+	}
 	chatLog.ReadRecords = readRecords.Export()
 
-	err := m.svcCtx.ChatLogModel.Insert(ctx, &model.ChatLog{})
+	// 转换为model.ChatLog类型
+	modelChatLog := &model.ChatLog{
+		ID:             chatLog.ID,
+		ConversationId: chatLog.ConversationId,
+		SendId:         chatLog.SendId,
+		RecvId:         chatLog.RecvId,
+		ChatType:       chatLog.ChatType,
+		MsgFrom:        chatLog.MsgFrom,
+		MsgType:        chatLog.MsgType,
+		MsgContent:     chatLog.MsgContent,
+		SendTime:       chatLog.SendTime,
+		ReadRecords:    chatLog.ReadRecords,
+	}
+
+	err = m.svcCtx.ChatLogModel.Insert(ctx, modelChatLog)
 	if err != nil {
 		return err
 	}
 
-	return m.svcCtx.ConversationModel.UpdateMsg(ctx, &model.ChatLog{})
+	// 更新会话最新消息
+	return m.svcCtx.ConversationModel.UpdateMsg(ctx, modelChatLog)
 }

@@ -5,6 +5,7 @@ import (
 	"PaiPai/apps/im/ws/websocket"
 	"PaiPai/apps/im/ws/ws"
 	constants "PaiPai/pkg/constant"
+
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -53,7 +54,7 @@ func single(srv *websocket.Server, data *ws.Push, recvId string) error {
 			Content:     data.Content,
 			ReadRecords: data.ReadRecords,
 		},
-	}), rconn[0])
+	}), rconn)
 
 }
 

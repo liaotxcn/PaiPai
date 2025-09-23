@@ -32,7 +32,7 @@ func (l *GroupPutInHandleLogic) GroupPutInHandle(req *types.GroupPutInHandleRep)
 	// todo: add your logic here and delete this line
 
 	uid := ctxdata.GetUId(l.ctx)
-	_, err = l.svcCtx.Social.GroupPutInHandle(l.ctx, &socialclient.GroupPutInHandleReq{
+	res, err := l.svcCtx.Social.GroupPutInHandle(l.ctx, &socialclient.GroupPutInHandleReq{
 		GroupReqId:   req.GroupReqId,
 		GroupId:      req.GroupId,
 		HandleUid:    uid,

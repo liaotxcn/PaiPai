@@ -28,12 +28,10 @@ func NewCreateGroupLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Creat
 }
 
 func (l *CreateGroupLogic) CreateGroup(req *types.GroupCreateReq) (resp *types.GroupCreateResp, err error) {
-	// todo: add your logic here and delete this line
-
 	uid := ctxdata.GetUId(l.ctx)
 
 	// 创建群
-	_, err = l.svcCtx.Social.GroupCreate(l.ctx, &socialclient.GroupCreateReq{
+	res, err := l.svcCtx.Social.GroupCreate(l.ctx, &socialclient.GroupCreateReq{
 		Name:       req.Name,
 		Icon:       req.Icon,
 		CreatorUid: uid,
@@ -51,6 +49,13 @@ func (l *CreateGroupLogic) CreateGroup(req *types.GroupCreateReq) (resp *types.G
 		GroupId:  res.Id,
 		CreateId: uid,
 	})
+	if err != nil {
+		return nil, err
+	}
 
-	return nil, err
+	resp = &types.GroupCreateResp{
+		GroupId: res.Id,
+	}
+
+	return resp, nil
 }

@@ -1,12 +1,13 @@
 package main
 
 import (
+	"time"
+
 	"github.com/zeromicro/go-zero/core/metric"
 	"github.com/zeromicro/go-zero/core/prometheus"
-	"time"
 )
 
-func main() {
+func prometheus_go() {
 	pCfg := prometheus.Config{
 		Host: "0.0.0.0",
 		Port: 8080,

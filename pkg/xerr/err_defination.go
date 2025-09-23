@@ -2,28 +2,26 @@ package xerr
 
 // User err
 var (
-	PhoneNotFound = New(ServerCommonError, "api not found")
-	IdNotFound    = New(ServerCommonError, "api id not found")
-	UserPwdErr    = New(ServerCommonError, "password is wrong")
-	ParamError    = New(RequestParamError, "params error")
+	PhoneNotFound = New(USER_ERROR, "phone not found")
+	IdNotFound    = New(USER_ERROR, "id not found")
+	UserPwdErr    = New(USER_ERROR, "password is wrong")
+	ParamError    = New(REQUEST_PARAM_ERROR, "params error")
 )
 
 // Friend Err
 var (
-	FriendAlreadyExists    = New(ServerCommonError, "friend already exists")
-	FriendRequestOnPending = New(ServerCommonError, "friend request on pending")
-	FriendRequestRefused   = New(ServerCommonError, "friend request refused")
-	FriendListNotFound     = New(ServerCommonError, "friend list not found")
-	FriendReqListNotFound  = New(ServerCommonError, "friend request list not found")
-
-	FindFriendByIdErr = New(ServerCommonError, "find friend by id error")
+	FriendAlreadyExists    = New(FRIEND_ERROR, "friend already exists")
+	FriendRequestOnPending = New(FRIEND_ERROR, "friend request on pending")
+	FriendRequestRefused   = New(FRIEND_ERROR, "friend request refused")
+	FriendListNotFound     = New(FRIEND_ERROR, "friend list not found")
+	FriendReqListNotFound  = New(FRIEND_ERROR, "friend request list not found")
+	FindFriendByIdErr      = New(FRIEND_ERROR, "find friend by id error")
 )
 
 // Group Err
 var (
-	GroupNotFound        = New(ServerCommonError, "group not found ")
-	GroupPutInNotFound   = New(ServerCommonError, "group put in request not found")
-	GroupInviterNotFound = New(ServerCommonError, "group inviter not found")
-
-	FindGroupByIdErr = New(ServerCommonError, "find group by id error, user haven't attend in any group")
+	GroupNotFound        = New(GROUP_ERROR, "group not found")
+	GroupPutInNotFound   = New(GROUP_ERROR, "group put in request not found")
+	GroupInviterNotFound = New(GROUP_ERROR, "group inviter not found")
+	FindGroupByIdErr     = New(GROUP_ERROR, "find group by id error, user haven't attend in any group")
 )

@@ -4,6 +4,7 @@ import (
 	"PaiPai/apps/social/api/internal/svc"
 	"PaiPai/apps/social/api/internal/types"
 	"PaiPai/apps/social/rpc/social"
+	constants "PaiPai/pkg/constant"
 	"PaiPai/pkg/ctxdata"
 	"context"
 
@@ -41,7 +42,7 @@ func (l *FriendsOnlineLogic) FriendsOnline(req *types.FriendsOnlineReq) (resp *t
 	for _, friend := range friendList.List {
 		Fids = append(Fids, friend.FriendUid)
 	}
-	onlines, err := l.svcCtx.Redis.Hgetall(status.REDIS_ONLINE_USER)
+	onlines, err := l.svcCtx.Redis.Hgetall(constants.REDIS_ONLINE_USER)
 	if err != nil {
 		return nil, err
 	}
