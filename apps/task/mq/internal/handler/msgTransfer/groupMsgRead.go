@@ -109,7 +109,7 @@ func (m *groupMsgRead) transfer() {
 func (m *groupMsgRead) IsIdle() bool {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	return m.IsIdle()
+	return m.isIdle()
 }
 
 func (m *groupMsgRead) isIdle() bool {

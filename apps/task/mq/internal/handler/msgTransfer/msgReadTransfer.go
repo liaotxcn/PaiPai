@@ -9,9 +9,10 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
-	"github.com/zeromicro/go-zero/core/stores/cache"
 	"sync"
 	"time"
+
+	"github.com/zeromicro/go-zero/core/stores/cache"
 )
 
 var (
@@ -57,12 +58,11 @@ func NewMsgReadTransfer(svc *svc.ServiceContext) *MsgReadTransfer {
 	return m
 }
 
-func (m *MsgReadTransfer) Consume(key, value string) error {
+func (m *MsgReadTransfer) Consume(ctx context.Context, key, value string) error {
 	m.Info("MsgChatTransfer.Consume", value)
 
 	var (
 		data mq.MsgMarkRead
-		ctx  = context.Background()
 	)
 	if err := json.Unmarshal([]byte(value), &data); err != nil {
 		return err
@@ -121,13 +121,23 @@ func (m *MsgReadTransfer) transfer() {
 		if m.svcCtx.Config.MsgReadHandler.GroupMsgReadHandler == GroupMsgReadHandlerAtTransfer {
 			continue
 		}
-		// 清空数据
+		// 清空数据 - 重构以避免死锁
 		m.mu.Lock()
-		if _, ok := m.groupMsgs[push.ConversationId]; ok && m.groupMsgs[push.ConversationId].IsIdle() {
-			m.groupMsgs[push.ConversationId].clear()
-			delete(m.groupMsgs, push.ConversationId)
-		}
+		msgRead, exists := m.groupMsgs[push.ConversationId]
+		m.mu.Unlock()
 
+		if exists {
+			// 在锁外检查闲置状态
+			if msgRead.IsIdle() {
+				m.mu.Lock()
+				// 再次检查以避免竞态条件
+				if msg, stillExists := m.groupMsgs[push.ConversationId]; stillExists {
+					msg.clear()
+					delete(m.groupMsgs, push.ConversationId)
+				}
+				m.mu.Unlock()
+			}
+		}
 	}
 }
 
@@ -145,8 +155,15 @@ func (m *MsgReadTransfer) UpdateChatLogRead(ctx context.Context, data *mq.MsgMar
 		case constants.SingleChatType:
 			chatLog.ReadRecords = []byte{1}
 		case constants.GroupChatType:
-			readRecords := bitmap.Lood(chatLog.ReadRecords)
-			readRecords.Set(data.SendId)
+			readRecords, err := bitmap.Load(chatLog.ReadRecords)
+			if err != nil {
+				m.Errorf("加载已读记录失败, chatLogId: %s, err: %v", chatLog.ID.Hex(), err)
+				continue
+			}
+			if err := readRecords.Set(data.SendId); err != nil {
+				m.Errorf("设置已读失败, chatLogId: %s, sendId: %s, err: %v", chatLog.ID.Hex(), data.SendId, err)
+				continue
+			}
 			chatLog.ReadRecords = readRecords.Export()
 		}
 

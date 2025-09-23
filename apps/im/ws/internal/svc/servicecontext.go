@@ -9,7 +9,7 @@ import (
 type ServiceContext struct {
 	Config config.Config
 
-	models.ChatLogModel
+	ChatLogModel models.ChatLogModel
 	mqclient.MsgChatTransferClient
 	mqclient.MsgReadTransferClient
 }
