@@ -111,6 +111,7 @@ type GroupPutInRep struct {
 }
 
 type GroupPutInResp struct {
+	GroupId string `json:"group_id,omitempty"`
 }
 
 type GroupRequests struct {
