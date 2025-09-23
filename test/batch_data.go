@@ -6,13 +6,14 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
+	"log"
+	"math/rand"
+	"time"
+
 	"github.com/google/uuid"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"log"
-	"math/rand"
-	"time"
 )
 
 // User对应数据库表结构
@@ -33,7 +34,7 @@ func (User) TableName() string {
 	return "users"
 }
 
-func main() {
+func baech_data() {
 	// 初始化GORM连接
 	db, err := initGormDB()
 	if err != nil {
