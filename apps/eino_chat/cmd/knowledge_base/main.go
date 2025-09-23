@@ -48,7 +48,7 @@ func main() {
 }
 
 func indexMarkdownFiles(ctx context.Context, dir string) error {
-	runner, err := knowledgeindexing.BuildKnowledgeIndexing(ctx)
+	runner, err := knowledge_service.BuildKnowledgeIndexing(ctx)
 	if err != nil {
 		return fmt.Errorf("build index graph failed: %w", err)
 	}
