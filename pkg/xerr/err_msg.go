@@ -1,9 +1,5 @@
-/**
- * @author: dn-jinmin/dn-jinmin
- * @doc:
- */
-
-// 给错误常量提供对应说明
+// @author: dn-jinmin/dn-jinmin
+// @doc: 错误消息映射表
 
 package xerr
 
@@ -13,7 +9,8 @@ var codeText = map[int]string{
 	DB_ERROR:            "数据库繁忙，稍后再尝试",
 }
 
-func ErrMsg(errcode int) string {
+// GetErrMsg 从错误码映射表获取错误消息
+func GetErrMsg(errcode int) string {
 	if msg, ok := codeText[errcode]; ok {
 		return msg
 	}
