@@ -15,4 +15,10 @@ docker pull ${reso_addr}:${tag}
 
 # 如果需要指定配置文件
 # docker run -p 10001:8080 --network paipai -v /paipai/config/user-rpc:/user/conf/ --name=${container_name} -d ${reso_addr}:${tag}
-docker run -p 8888:8888 -p 7888:7888 --name=${container_name} -d ${reso_addr}:${tag}
+# docker run -p 8888:8888 -p 7888:7888 --name=${container_name} -d ${reso_addr}:${tag}  # 原配置
+ docker run -p 8888:8888 -p 7888:7888 \
+    --health-cmd="curl -f http://localhost:8888/health || exit 1" \
+    --health-interval=30s \
+    --health-timeout=5s \
+    --health-retries=3 \
+    --name=${container_name} -d ${reso_addr}:${tag}
