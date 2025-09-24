@@ -1,5 +1,5 @@
 #!/bin/bash
-reso_addr='registry.cn-shenzhen.aliyuncs.com/paipai/user-api-dev'
+reso_addr='registry.cn-shenzhen.aliyuncs.com/paipai/social-api-dev'
 tag='latest'
 
 container_name="pai-pai-social-api-test"

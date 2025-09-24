@@ -3,7 +3,7 @@ need_start_server_shell=(
   user-rpc-test.sh
   social-rpc-test.sh
   im-rpc-test.sh
-  im-ws-rpc.sh
+  im-ws-test.sh
 
   # api
   user-api-test.sh
