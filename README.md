@@ -7,6 +7,10 @@
   <img src="https://img.shields.io/badge/AI_Enhanced-FF6F00?style=for-the-badge&logo=ai&logoColor=white" alt="AI Enhanced">
 </div>
 
+
+## 📋 项目简介
+   基于微服务架构设计的现代化社交服务平台，专注于提供高质量的即时通信、丰富的社交互动以及智能AI增强体验。项目采用云原生设计理念，结合主流技术栈，同时进一步融合AI大模型应用，旨在构建安全、可靠、高性能且易于扩展的社交服务解决方案。
+
 ---
 
 ## 🚀 整体架构
@@ -63,27 +67,42 @@
 
 ```plaintext
 PaiPai/
-├── apps/            # Service
+├── apps/            # 核心业务
 │   ├── im/          # 即时通信服务
 │   ├── social/      # 社交服务
-│   ├── task/        # 事务服务
+│   ├── task/        # 任务消息队列
 │   ├── user/        # 用户服务
-│   └── eino_chat/   # EinoService
-├── components/      # API网关
-├── deploy/          # Docker部署&&运行脚本
-├── pkg/             # 工具包
-├── test/            # 实例测试等
-├── go.mod               
-├── docker-compose.yaml   
-└── Makefile              
+│   └── eino_chat/   # AI服务
+├── components/      # 基础设施组件
+│   ├── apisix/           # API网关配置
+│   ├── apisix-dashboard/ # API网关管理后台
+│   ├── filebeat/         # 日志收集
+│   ├── grafana/          # 监控可视化
+│   ├── kibana/           # 日志分析
+│   ├── logstash/         # 日志处理
+│   ├── prometheus/       # 监控系统
+│   └── sail/             # 服务编排
+├── deploy/          # 部署配置文件
+│   ├── cicd/             # CI/CD、代码审查
+│   ├── dockerfile/       # Docker构建
+│   ├── makefile/         # 构建脚本
+│   ├── script/           # 启动测试脚本
+│   └── sql/              # 数据库初始化
+├── pkg/             # 公共工具包
+├── test/            # 测试代码和示例
+├── go.mod           
+├── go.sum           
+├── docker-compose.yaml   # 容器编排配置
+├── PORT_MAP.md      # 端口映射文档
+└── README.md        # 项目说明文档
 ```
 
 ---
 
 ## 🌟 功能特性
 - **微服务三高架构**
-  - 限流、熔断、降级 
-  - 高可用、高性能、高扩展
+  - 限流、熔断、降级机制
+  - 高可用、高性能、高扩展性设计
 - **高效IM通信引擎**
   - WebSocket + gRPC 高效通信
   - 智能路由节点消息中转优化
@@ -108,12 +127,16 @@ PaiPai/
  
 ---
 
+## 🤝 贡献指南
+
+欢迎对项目进行贡献！感谢！
+
+1. **Fork 仓库**并克隆到本地
+2. **创建分支**进行开发（`git checkout -b feature/your-feature`）
+3. **提交代码**并确保通过测试
+4. **创建 Pull Request** 描述您的更改
+5. 等待**代码审查**并根据反馈进行修改
+
+---
+
 ### <div align="center"> <strong>✨ 持续更新完善中... ✨</strong> </div>
-
-
-
-
-
-
-
-
