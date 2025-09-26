@@ -12,7 +12,7 @@ VERSION_TEST=$(VERSION)
 APP_NAME_TEST=paipai-${SERVER_NAME}-${SERVER_TYPE}-test
 
 # 测试下的编译文件
-DOCKER_FILE_TEST=./deploy/dockerfile/Dockerfile_${SERVER_NAME}_${SERVER_TYPE}_dev
+DOCKER_FILE_TEST=./deploy/dockerfile/dockerfile_${SERVER_NAME}_${SERVER_TYPE}_dev
 
 # 测试环境的编译发布
 build-test:
