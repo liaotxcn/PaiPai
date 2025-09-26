@@ -2,14 +2,14 @@ Name: social.rpc
 ListenOn: 0.0.0.0:8080
 Etcd:
   Hosts:
-  - 127.0.0.1:2379
+  - ${HOST_IP}:3379
   Key: social.rpc
 
 Mysql:
-  DataSource: root:paipai@tcp(x.x.x.x:13306)/paipai?charset=utf8mb4
+  DataSource: root:paipai@tcp(${HOST_IP}:13306)/paipai?charset=utf8mb4
 
 Cache:
-  - Host: x.x.x.x:16379
+  - Host: ${HOST_IP}:16379
     Type: node
     Pass: paipai
 
@@ -19,5 +19,5 @@ JwtAuth:
 
 telemetry:
   batcher: jaeger
-  endpoint: http://x.x.x.x:14268/api/traces
+  endpoint: http://${HOST_IP}:14268/api/traces
   name: social.rpc

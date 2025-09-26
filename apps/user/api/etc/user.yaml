@@ -3,25 +3,25 @@ Host: 0.0.0.0
 Port: 8888
 
 Redisx:
-  Host: x.x.x.x:16379
+  Host: ${HOST_IP}:16379
   Pass: paipai
 
 UserRpc:
   Etcd:
     Hosts:
-      - x.x.x.x:3379     # 宿主机地址
+      - ${HOST_IP}:3379     # 宿主机地址
     Key: user.rpc
 
 SocialRpc:
   Etcd:
     Host:
-      - x.x.x.x:3379
+      - ${HOST_IP}:3379
     Key: social.rpc
 
 ImRpc:
   Etcd:
     Host:
-      - x.x.x.x:3379
+      - ${HOST_IP}:3379
     Key: im.rp
 
 JwtAuth:

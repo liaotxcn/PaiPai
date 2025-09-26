@@ -2,9 +2,9 @@ Name: im.rpc
 ListenOn: 0.0.0.0:10002
 Etcd:
   Hosts:
-    - x.x.x.x:3379   # 宿主机地址
+    - ${HOST_IP}:3379   # 宿主机地址
   Key: im.rpc
 
 Mongo:
-  Url: "mongodb://root:paipai@x.x.x.x:47017"
+  Url: "mongodb://root:paipai@${HOST_IP}:47017"
   Db: pai-pai

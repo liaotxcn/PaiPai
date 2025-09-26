@@ -11,7 +11,7 @@ services:
     environment:
       - ETCD_ENABLE_V2=true
       - ALLOW_NONE_AUTHENTICATION=yes
-      - ETCD_ADVERTISE_CLIENT_URLS=http://x.x.x,x:3379    # 宿主机地址
+      - ETCD_ADVERTISE_CLIENT_URLS=http://${HOST_IP}:3379    # 宿主机地址
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
       - ETCD_NAME=etcd
     volumes:
@@ -51,7 +51,7 @@ services:
       - ./components/mysql/data:/var/lib/mysql
       - /etc/localtime:/etc/localtime
     environment:
-      MYSQL_ROOT_PASSWORD: xxxxxx   # MySQL-root密码
+      MYSQL_ROOT_PASSWORD: 123456   # MySQL-root密码
     restart: always
     networks:
       pai-pai:
@@ -98,7 +98,7 @@ services:
       KAFKA_BROKER_ID: 0
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_CREATE_TOPICS: "ws2ms_chat:8:1,ms2ps_chat:8:1,msg_to_mongo:8:1"
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://x.x.x.x:9092    # 宿主机地址
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://${HOST_IP}:9092    # 宿主机地址
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT"
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_LISTENERS: INSIDE://:9092
@@ -242,7 +242,6 @@ services:
     user: root
     networks:
       pai-pai:
-        -
 
 networks:
   pai-pai:

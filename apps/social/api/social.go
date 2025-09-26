@@ -23,7 +23,7 @@ func main() {
 	//conf.MustLoad(*configFile, &c)
 	var configs = "social-api.yaml"
 	err := configserver.NewConfigServer(*configFile, configserver.NewSail(&configserver.Config{
-		ETCDEndpoints:  "x.x.x.x:3379",
+		ETCDEndpoints:  "${HOST_IP}:3379",
 		ProjectKey:     "xxxxxx",
 		Namespace:      "user",
 		Configs:        configs,

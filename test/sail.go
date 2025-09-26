@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/HYY-yu/sail-client"
 	"time"
+
+	"github.com/HYY-yu/sail-client"
 ) // sail客户端库
 
 // sail应用实例
@@ -33,7 +34,7 @@ type Config struct {
 func main() {
 	var cfg Config
 	s := sail.New(&sail.MetaConfig{
-		ETCDEndpoints:  "x.x.x.x:3379",
+		ETCDEndpoints:  "${HOST_IP}:3379",
 		ProjectKey:     "xxxxxx",
 		Namespace:      "user",
 		Configs:        "user-api.yaml",
