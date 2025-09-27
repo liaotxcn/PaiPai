@@ -1,16 +1,18 @@
 package main
 
 import (
-	"PaiPai/pkg/configserver"
 	"PaiPai/pkg/interceptor/rpcserver"
 	"flag"
 	"fmt"
+	"os"
+	"strings"
 
 	"PaiPai/apps/user/rpc/internal/config"
 	"PaiPai/apps/user/rpc/internal/server"
 	"PaiPai/apps/user/rpc/internal/svc"
 	"PaiPai/apps/user/rpc/user"
 
+	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
@@ -23,31 +25,36 @@ func main() {
 	flag.Parse()
 
 	var c config.Config
-	//conf.MustLoad(*configFile, &c)
 
-	var configs = "user-rpc.yaml"
-	err := configserver.NewConfigServer(*configFile, configserver.NewSail(&configserver.Config{
-		ETCDEndpoints:  "x.x.x.x:3379",
-		ProjectKey:     "xxxxxx",
-		Namespace:      "user",
-		Configs:        configs,
-		ConfigFilePath: "../etc/conf",
-		// 本地测试使用以下配置
-		//ConfigFilePath: "./etc/conf",
-		LogLevel: "DEBUG",
-	})).MustLoad(&c, func(bytes []byte) error {
-		var c config.Config
-		err := configserver.LoadFromJsonBytes(bytes, &c)
+	// 从环境变量获取HOST_IP，如果没有则使用默认值
+	hostIP := "host.docker.internal"
+	if envHostIP := os.Getenv("HOST_IP"); envHostIP != "" {
+		hostIP = envHostIP
+	}
+
+	// 创建一个临时配置文件，替换其中的环境变量
+	content, err := os.ReadFile(*configFile)
+	if err != nil {
+		// 如果无法读取配置文件，尝试从容器内路径读取
+		content, err = os.ReadFile("/user/conf/user.yaml")
 		if err != nil {
-			fmt.Println("config read err :", err)
-			return nil
+			panic(err)
 		}
-		fmt.Printf(configs, "config has changed :%+v \n", c)
-		return nil
-	})
+	}
+
+	// 替换配置文件中的${HOST_IP}占位符
+	content = []byte(strings.Replace(string(content), "${HOST_IP}", hostIP, -1))
+
+	// 写入临时文件
+	tmpFile := "/tmp/user.yaml"
+	err = os.WriteFile(tmpFile, content, 0644)
 	if err != nil {
 		panic(err)
 	}
+
+	// 使用go-zero的默认方式加载处理过的配置文件
+	fmt.Println("使用处理后的配置文件:", tmpFile)
+	conf.MustLoad(tmpFile, &c)
 
 	ctx := svc.NewServiceContext(c)
 

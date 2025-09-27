@@ -200,6 +200,15 @@ start_infrastructure() {
 run_local_containers() {
     echo "\n运行本地构建的服务容器..."
     
+    # 检查并创建pai-pai网络
+    echo "- 检查pai-pai网络是否存在..."
+    if ! docker network inspect pai-pai > /dev/null 2>&1; then
+        echo "- 创建pai-pai网络..."
+        docker network create pai-pai
+    else
+        echo "- pai-pai网络已存在"
+    fi
+    
     # User RPC
     echo "- 启动user-rpc服务"
     docker run -p 10000:10000 \
@@ -207,6 +216,7 @@ run_local_containers() {
         --health-interval=30s \
         --health-timeout=5s \
         --health-retries=3 \
+        --network pai-pai \
         --name="pai-pai-user-rpc-test" -d paipai-user-rpc-test
     
     # User API
@@ -216,6 +226,7 @@ run_local_containers() {
         --health-interval=30s \
         --health-timeout=5s \
         --health-retries=3 \
+        --network pai-pai \
         --name="pai-pai-user-api-test" -d paipai-user-api-test
     
     # Social RPC
@@ -225,6 +236,7 @@ run_local_containers() {
         --health-interval=30s \
         --health-timeout=5s \
         --health-retries=3 \
+        --network pai-pai \
         --name="pai-pai-social-rpc-test" -d paipai-social-rpc-test
     
     # Social API
@@ -234,6 +246,7 @@ run_local_containers() {
         --health-interval=30s \
         --health-timeout=5s \
         --health-retries=3 \
+        --network pai-pai \
         --name="pai-pai-social-api-test" -d paipai-social-api-test
     
     # IM RPC
@@ -243,6 +256,7 @@ run_local_containers() {
         --health-interval=30s \
         --health-timeout=5s \
         --health-retries=3 \
+        --network pai-pai \
         --name="pai-pai-im-rpc-test" -d paipai-im-rpc-test
     
     # IM API
@@ -252,6 +266,7 @@ run_local_containers() {
         --health-interval=30s \
         --health-timeout=5s \
         --health-retries=3 \
+        --network pai-pai \
         --name="pai-pai-im-api-test" -d paipai-im-api-test
     
     # IM WS
@@ -261,6 +276,7 @@ run_local_containers() {
         --health-interval=30s \
         --health-timeout=5s \
         --health-retries=3 \
+        --network pai-pai \
         --name="pai-pai-im-ws-test" -d paipai-im-ws-test
     
     # Task MQ
@@ -270,6 +286,7 @@ run_local_containers() {
         --health-interval=30s \
         --health-timeout=5s \
         --health-retries=3 \
+        --network pai-pai \
         --name="pai-pai-task-mq-test" -d paipai-task-mq-test
 }
 
