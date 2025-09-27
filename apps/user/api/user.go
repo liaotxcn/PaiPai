@@ -8,10 +8,11 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"sync"
+
 	"github.com/zeromicro/go-zero/core/proc"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"sync"
 
 	"PaiPai/apps/user/api/internal/config"
 )
@@ -33,13 +34,13 @@ func main() {
 	}
 	// sail应用
 	err := configserver.NewConfigServer(*configFile, configserver.NewSail(&configserver.Config{
-		ETCDEndpoints:  fmt.Sprintf("%s:3379", hostIP),
-		ProjectKey:     "paipai",
-		Namespace:      "user",
-		Configs:        configs,
+		ETCDEndpoints: fmt.Sprintf("%s:3379", hostIP),
+		ProjectKey:    "paipai",
+		Namespace:     "user",
+		Configs:       configs,
 		// ConfigFilePath应该是目录路径而非文件路径
 		ConfigFilePath: "/user/conf",
-		LogLevel: "DEBUG",
+		LogLevel:       "DEBUG",
 	})).MustLoad(&c, func(bytes []byte) error {
 		var c config.Config
 		err := configserver.LoadFromJsonBytes(bytes, &c)
