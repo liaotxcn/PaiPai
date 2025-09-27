@@ -31,4 +31,4 @@ publish-test:
 	@echo 'publish ${VERSION_TEST} to ${DOCKER_REPO_TEST}'
 	docker push $(DOCKER_REPO_TEST):${VERSION_TEST}
 
-release-test: build-test tag-test publish-test
+release-test: build-test

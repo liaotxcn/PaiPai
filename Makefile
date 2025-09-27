@@ -1,4 +1,3 @@
-# user service
 user-rpc-dev:
 	@make -f deploy/mk/user-rpc.mk release-test
 
@@ -45,3 +44,18 @@ eino-docker-run:
 
 install-server:
 	cd ./deploy/script && chmod +x release-test.sh && ./release-test.sh
+
+# 本地构建并运行所有服务，不依赖阿里云仓库
+# 使用方法: make local-run [LOCAL_MIRROR=true]
+local-run:
+	cd ./deploy/script && chmod +x local-run.sh && ./local-run.sh $(if $(LOCAL_MIRROR),--local-mirror)
+
+# 停止所有服务
+stop-all:
+	@if command -v docker-compose &> /dev/null; then \
+		docker-compose down; \
+	else \
+		docker compose down; \
+	fi
+	docker ps -aq -f "name=pai-pai-" | xargs -r docker stop
+	docker ps -aq -f "name=pai-pai-" | xargs -r docker rm

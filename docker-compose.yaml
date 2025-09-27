@@ -3,7 +3,7 @@ version: '3'
 services:
 #  Etcd
   etcd:
-    image: bitnami/etcd:3.5.20
+    image: docker.1ms.run/bitnami/etcd:3.5.20
     container_name: etcd
     ports:
       - "3379:2379"
@@ -22,7 +22,7 @@ services:
 
 # Redis
   redis:
-    image: redis:alpine3.18
+    image: docker.1ms.run/redis:alpine3.18
     ports:
       - 16379:6379
     container_name: redis
@@ -43,7 +43,7 @@ services:
 
 # MySQL
   mysql:
-    image: mysql:8.0
+    image: docker.1ms.run/mysql:8.0
     ports:
       - 13306:3306
     container_name: mysql
@@ -58,7 +58,7 @@ services:
 
 # MongoDB
   mongo:
-    image: mongo:4.0
+    image: docker.1ms.run/mongo:4.0
     container_name: mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
@@ -74,7 +74,7 @@ services:
 
 # Zookeeper
   zookeeper:
-    image: wurstmeister/zookeeper
+    image: docker.1ms.run/wurstmeister/zookeeper
     ports:
       - 2181:2181
     container_name: zookeeper
@@ -88,7 +88,7 @@ services:
 
 # Kafka
   kafka:
-    image: wurstmeister/kafka
+    image: docker.1ms.run/wurstmeister/kafka
     container_name: kafka
     restart: always
     ports:
@@ -110,7 +110,7 @@ services:
 
 # apisix-仪表盘
   apisix-dashboard:
-    image: apache/apisix-dashboard:3.0.1-alpine
+    image: docker.1ms.run/apache/apisix-dashboard:3.0.1-alpine
     container_name: apisix-dashboard
     restart: always
     depends_on:
@@ -125,7 +125,7 @@ services:
 
 # apisix
   apisix:
-    image: apache/apisix:latest
+    image: docker.1ms.run/apache/apisix:latest
     container_name: apisix
     restart: always
     depends_on:
@@ -158,7 +158,7 @@ services:
 
 # jeager
   jeager:
-    image: jaegertracing/all-in-one:latest
+    image: docker.1ms.run/jaegertracing/all-in-one:latest
     container_name: jeager
     ports:
       - "5775:5775/udp"
@@ -174,7 +174,7 @@ services:
 
 # elasticsearch
   elasticsearch:
-    image: elasticsearch:7.17.4
+    image: docker.1ms.run/elasticsearch:7.17.4
     volumes:
       - /etc/localtime:/etc/localtime
       - ./components/elasticsearch/data:/usr/share/elasticsearch/data
@@ -192,7 +192,7 @@ services:
 
 # kibana
   kibana:
-    image: kibana:7.17.4
+    image: docker.1ms.run/kibana:7.17.4
     container_name: kibana
     restart: always
     volumes:
