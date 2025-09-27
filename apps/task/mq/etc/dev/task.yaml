@@ -4,7 +4,7 @@ ListenOn: 0.0.0.0:10091
 MsgChatTransfer:
   Name: MsgChatTransfer
   Brokers:
-    - x.x.x.x:9092
+    - ${HOST_IP}:9092
   Group: kafka
   Topic: msgChatTransfer
   Offset: first
@@ -13,7 +13,7 @@ MsgChatTransfer:
 MsgReadTransfer:
   Name: MsgReadTransfer
   Brokers:
-    - x.x.x.x:9092
+    - ${HOST_IP}:9092
   Group: kafka
   Topic: msgReadTransfer
   Offset: first
@@ -25,19 +25,19 @@ MsgReadHandler:
   GroupMsgReadRecordDelayCount: 2
 
 Redisx:
-  Host: x.x.x.x:16379
+  Host: ${HOST_IP}:16379
   Type: node
   Pass: pai-pai
 
 Mongo:
-  Url: "mongodb://root:paipai@x.x.x.x:47017"
+  Url: "mongodb://root:paipai@${HOST_IP}:47017"
   Db: paipai
 
 SocialRpc:
   Etcd:
     Hosts:
-      - x.x.x.x:2379
+      - ${HOST_IP}:3379
     Key: social.rpc
 
 Ws:
-  Host: x.x.x.x:10090
+  Host: ${HOST_IP}:10090

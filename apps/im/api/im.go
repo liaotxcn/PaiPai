@@ -5,6 +5,7 @@ import (
 	"PaiPai/pkg/resultx"
 	"flag"
 	"fmt"
+	"os"
 	"github.com/zeromicro/go-zero/rest/httpx"
 
 	"PaiPai/apps/im/api/internal/config"
@@ -21,15 +22,19 @@ func main() {
 
 	var c config.Config
 	//conf.MustLoad(*configFile, &c)
-	var configs = "im-api.yaml"
+	var configs = "im.yaml"
+	// 从环境变量获取HOST_IP，如果没有则使用默认值
+	hostIP := "host.docker.internal"
+	if envHostIP := os.Getenv("HOST_IP"); envHostIP != "" {
+		hostIP = envHostIP
+	}
 	err := configserver.NewConfigServer(*configFile, configserver.NewSail(&configserver.Config{
-		ETCDEndpoints:  "x.x.x.x:3379",
-		ProjectKey:     "xxxxxx",
-		Namespace:      "user",
+		ETCDEndpoints:  fmt.Sprintf("%s:3379", hostIP),
+		ProjectKey:     "paipai",
+		Namespace:      "im",
 		Configs:        configs,
-		ConfigFilePath: "../etc/conf",
-		// 本地测试使用以下配置
-		//ConfigFilePath: "./etc/conf",
+		// ConfigFilePath应该是目录路径而非文件路径
+		ConfigFilePath: "/im/conf",
 		LogLevel: "DEBUG",
 	})).MustLoad(&c, func(bytes []byte) error {
 		var c config.Config
@@ -38,7 +43,7 @@ func main() {
 			fmt.Println("config read err :", err)
 			return nil
 		}
-		fmt.Printf(configs, "config has changed :%+v \n", c)
+		fmt.Printf("%s config has changed :%+v \n", configs, c)
 		return nil
 	})
 	if err != nil {

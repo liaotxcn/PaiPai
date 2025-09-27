@@ -9,13 +9,13 @@ refreshDuration = "168h"
 connMaxLifeTime = "3m"
 maxIdleConn = 30
 maxOpenConn = 60
-addr = "x.x.x.x:13306"
+addr = "${HOST_IP}:13306"
 name = "sail"
 pass = "paipai"
 user = "root"
 
 [etcd]
-endpoints = ["x.x.x.x:3379"]
+endpoints = ["${HOST_IP}:3379"]
 username = ""
 password = ""
 dialTimeout = "10s"

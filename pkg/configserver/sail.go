@@ -22,15 +22,15 @@ type Sail struct {
 }
 
 func NewSail(cfg *Config) *Sail {
-	//s := sail.New(&sail.MetaConfig{
-	//	ETCDEndpoints:  cfg.ETCDEndpoints,
-	//	ProjectKey:     cfg.ProjectKey,
-	//	Namespace:      cfg.Namespace,
-	//	Configs:        cfg.Configs,
-	//	ConfigFilePath: cfg.ConfigFilePath,
-	//	LogLevel:       cfg.LogLevel,
-	//})
-	return &Sail{c: cfg}
+	s := sail.New(&sail.MetaConfig{
+		ETCDEndpoints:  cfg.ETCDEndpoints,
+		ProjectKey:     cfg.ProjectKey,
+		Namespace:      cfg.Namespace,
+		Configs:        cfg.Configs,
+		ConfigFilePath: cfg.ConfigFilePath,
+		LogLevel:       cfg.LogLevel,
+	})
+	return &Sail{Sail: s, c: cfg}
 }
 
 func (s *Sail) Build() error {

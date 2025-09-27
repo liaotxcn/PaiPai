@@ -1,6 +1,6 @@
 VERSION=latest
 
-SERVER_NAME=social
+SERVER_NAME=user
 SERVER_TYPE=api
 
 # 测试环境配置
@@ -9,10 +9,10 @@ DOCKER_REPO_TEST=registry.cn-shenzhen.aliyuncs.com/xxx/${SERVER_NAME}-${SERVER_T
 # 测试版本
 VERSION_TEST=$(VERSION)
 # 编译的程序名称
-APP_NAME_TEST=PaiPai-${SERVER_NAME}-${SERVER_TYPE}-test
+APP_NAME_TEST=paipai-${SERVER_NAME}-${SERVER_TYPE}-test
 
 # 测试下的编译文件
-DOCKER_FILE_TEST=./deploy/dockerfile/Dockerfile_${SERVER_NAME}_${SERVER_TYPE}_dev
+DOCKER_FILE_TEST=./deploy/dockerfile/dockerfile_${SERVER_NAME}_${SERVER_TYPE}_dev
 
 # 测试环境的编译发布
 build-test:
@@ -31,4 +31,4 @@ publish-test:
 	@echo 'publish ${VERSION_TEST} to ${DOCKER_REPO_TEST}'
 	docker push $(DOCKER_REPO_TEST):${VERSION_TEST}
 
-release-test: build-test tag-test publish-test
+release-test: build-test

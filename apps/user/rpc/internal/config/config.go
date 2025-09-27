@@ -15,7 +15,8 @@ type Config struct {
 
 	Cache cache.CacheConf
 
-	Redis redis.RedisConf
+	// 修改字段名以匹配配置文件中的Redisx
+	Redisx redis.RedisConf
 
 	Jwt struct {
 		AccessSecret string

@@ -21,10 +21,10 @@ import (
 	"context"
 	"fmt"
 	"io/fs"
+	"log"
+	"os"
 	"path/filepath"
 	"strings"
-
-	"PaiPai/pkg/eino_chat"
 
 	"github.com/cloudwego/eino/components/document"
 	"github.com/cloudwego/eino/components/embedding"
@@ -32,8 +32,15 @@ import (
 )
 
 func init() {
-	// check some essential envs
-	eino_chat.MustHasEnvs("ARK_API_KEY", "ARK_EMBEDDING_MODEL")
+	// 检查环境变量，至少需要配置一种AI服务(.env)
+	hasArk := os.Getenv("ARK_API_KEY") != "" && os.Getenv("ARK_EMBEDDING_MODEL") != ""
+	hasZhipu := os.Getenv("ZHIPUAI_API_KEY") != ""
+
+	if !hasArk && !hasZhipu {
+		log.Fatalf("❌ [ERROR] 至少需要配置一种AI服务:\n" +
+			"1. 火山云方舟: ARK_API_KEY 和 ARK_EMBEDDING_MODEL\n" +
+			"2. 智谱AI: ZHIPUAI_API_KEY")
+	}
 }
 
 func main() {
