@@ -6,7 +6,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-
 	"github.com/zeromicro/go-zero/rest/httpx"
 
 	"PaiPai/apps/social/api/internal/config"
@@ -16,7 +15,7 @@ import (
 	"github.com/zeromicro/go-zero/rest"
 )
 
-var configFile = flag.String("f", "etc/social.yaml", "the config file")
+var configFile = flag.String("f", "etc/dev/social.yaml", "the config file")
 
 func main() {
 	flag.Parse()
@@ -24,13 +23,14 @@ func main() {
 	var c config.Config
 	//conf.MustLoad(*configFile, &c)
 	var configs = "social.yaml"
-	// 从环境变量获取HOST_IP，如果没有则使用默认值
-	hostIP := "host.docker.internal"
+	// 使用etcd容器名称而不是host.docker.internal，以便在Docker网络中直接解析
+	hostIP := "etcd"
 	if envHostIP := os.Getenv("HOST_IP"); envHostIP != "" {
 		hostIP = envHostIP
 	}
 	err := configserver.NewConfigServer(*configFile, configserver.NewSail(&configserver.Config{
-		ETCDEndpoints:  fmt.Sprintf("%s:3379", hostIP),
+		// 修改为字符串数组格式，以匹配Config结构体中的类型定义
+		ETCDEndpoints:  []string{fmt.Sprintf("%s:2379", hostIP)},
 		ProjectKey:     "paipai",
 		Namespace:      "social",
 		Configs:        configs,
@@ -58,7 +58,6 @@ func main() {
 	handler.RegisterHandlers(server, ctx)
 
 	httpx.SetErrorHandlerCtx(resultx.ErrHandler(c.Name))
-	httpx.SetOkHandler(resultx.OkHandler)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

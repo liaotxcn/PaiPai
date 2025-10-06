@@ -59,3 +59,7 @@ stop-all:
 	fi
 	docker ps -aq -f "name=pai-pai-" | xargs -r docker stop
 	docker ps -aq -f "name=pai-pai-" | xargs -r docker rm
+
+# 查看所有镜像和服务状态
+status-all:
+	@cd ./deploy/script && chmod +x status-all.sh && bash ./status-all.sh

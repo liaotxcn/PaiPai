@@ -1,24 +1,21 @@
 package main
 
 import (
-	"PaiPai/apps/user/api/internal/handler"
-	"PaiPai/apps/user/api/internal/svc"
 	"PaiPai/pkg/configserver"
 	"PaiPai/pkg/resultx"
 	"flag"
 	"fmt"
 	"os"
-	"github.com/zeromicro/go-zero/core/proc"
-	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"sync"
 
 	"PaiPai/apps/user/api/internal/config"
+	"PaiPai/apps/user/api/internal/handler"
+	"PaiPai/apps/user/api/internal/svc"
+
+	"github.com/zeromicro/go-zero/rest"
 )
 
-var configFile = flag.String("f", "etc/user.yaml", "the config file")
-
-var wg sync.WaitGroup
+var configFile = flag.String("f", "etc/dev/user.yaml", "the config file")
 
 func main() {
 	flag.Parse()
@@ -26,14 +23,14 @@ func main() {
 	var c config.Config
 	//conf.MustLoad(*configFile, &c)
 	var configs = "user.yaml"
-	// 从环境变量获取HOST_IP，如果没有则使用默认值
-	hostIP := "host.docker.internal"
+	// 使用etcd容器名称而不是host.docker.internal，以便在Docker网络中直接解析
+	hostIP := "etcd"
 	if envHostIP := os.Getenv("HOST_IP"); envHostIP != "" {
 		hostIP = envHostIP
 	}
-	// sail应用
 	err := configserver.NewConfigServer(*configFile, configserver.NewSail(&configserver.Config{
-		ETCDEndpoints:  fmt.Sprintf("%s:3379", hostIP),
+		// 修改为字符串数组格式，以匹配Config结构体中的类型定义
+		ETCDEndpoints:  []string{fmt.Sprintf("%s:2379", hostIP)},
 		ProjectKey:     "paipai",
 		Namespace:      "user",
 		Configs:        configs,
@@ -45,39 +42,22 @@ func main() {
 		err := configserver.LoadFromJsonBytes(bytes, &c)
 		if err != nil {
 			fmt.Println("config read err :", err)
+			return nil
 		}
-		fmt.Printf("%s config has changed : %+v\n", configs, c)
-		proc.WrapUp() //  停止服务
-		wg.Add(1)
-		go func(c config.Config) {
-			defer wg.Done()
-			Run(c)
-		}(c)
+		fmt.Printf("%s config has changed :%+v \n", configs, c)
 		return nil
 	})
 	if err != nil {
 		panic(err)
 	}
 
-	wg.Add(1)
-	go func(c config.Config) {
-		defer wg.Done()
-		Run(c)
-	}(c)
-	wg.Wait()
-
-}
-
-func Run(c config.Config) {
-	// rest.WithCors()跨域支持
-	server := rest.MustNewServer(c.RestConf, rest.WithCors())
+	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
 
 	httpx.SetErrorHandlerCtx(resultx.ErrHandler(c.Name))
-	httpx.SetOkHandler(resultx.OkHandler)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

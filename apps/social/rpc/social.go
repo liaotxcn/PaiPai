@@ -2,8 +2,6 @@ package main
 
 import (
 	"PaiPai/pkg/configserver"
-	"PaiPai/pkg/interceptor"
-	"PaiPai/pkg/interceptor/rpcserver"
 	"flag"
 	"fmt"
 	"os"
@@ -19,20 +17,22 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "etc/social.yaml", "the config file")
+var configFile = flag.String("f", "etc/dev/social.yaml", "the config file")
 
 func main() {
 	flag.Parse()
 
 	var c config.Config
+	//conf.MustLoad(*configFile, &c)
 	var configs = "social.yaml"
-	// 从环境变量获取HOST_IP，如果没有则使用默认值
-	hostIP := "host.docker.internal"
+	// 使用etcd容器名称而不是host.docker.internal，以便在Docker网络中直接解析
+	hostIP := "etcd"
 	if envHostIP := os.Getenv("HOST_IP"); envHostIP != "" {
 		hostIP = envHostIP
 	}
 	err := configserver.NewConfigServer(*configFile, configserver.NewSail(&configserver.Config{
-		ETCDEndpoints:  fmt.Sprintf("%s:3379", hostIP),
+		// 修改为字符串数组格式，以匹配Config结构体中的类型定义
+		ETCDEndpoints:  []string{fmt.Sprintf("%s:2379", hostIP)},
 		ProjectKey:     "paipai",
 		Namespace:      "social",
 		Configs:        configs,
@@ -52,18 +52,23 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		social.RegisterSocialServer(grpcServer, server.NewSocialServer(ctx))
+		social.RegisterSocialServer(grpcServer, server.NewSocialServer(svc.NewServiceContext(c)))
 
+		// err := grpcServer.AddUnaryInterceptors(
+		// 拦截器
+		// )
+		// if err != nil {
+		//  panic(err)
+		// }
+
+		// 添加反射支持，便于调试
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}
 	})
 	defer s.Stop()
-	s.AddUnaryInterceptors(rpcserver.LogInterceptor, rpcserver.SyncLimiterInterceptor(10))
-	s.AddUnaryInterceptors(interceptor.NewIdempotenceServer(interceptor.NewDefaultIdempotent(c.Cache[0].RedisConf)))
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
