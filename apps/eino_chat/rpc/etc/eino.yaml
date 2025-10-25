@@ -2,5 +2,5 @@ Name: eino.rpc
 ListenOn: 0.0.0.0:8080
 Etcd:
   Hosts:
-  - ${HOST_IP}:3379
+  - etcd:3379
   Key: eino.rpc

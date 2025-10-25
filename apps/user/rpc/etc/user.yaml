@@ -2,24 +2,24 @@ Name: user.rpc
 ListenOn: 0.0.0.0:10000
 Etcd:
   Hosts:
-    - ${HOST_IP}:3379    # 宿主机地址
+    - etcd:3379    # 宿主机地址
   Key: user.rpc
 
 Mysql:
   DataSource: root:paipai@tcp(${HOST_IP}:13306)/paipai?charset=utf8mb4
 
 Redisx:
-  Host: ${HOST_IP}:16379
+  Host: redis:6379
   Type: node
   Pass: paipai
 
 Cache:
-  - Host: ${HOST_IP}:16379
+  - Host: redis:6379
     Type: node
     Pass: paipai
 
 Jwt:
-  AccessSecret: paipai
+  AccessSecret: "paipai123"
   AccessExpire: 8640000
 
 telemetry:

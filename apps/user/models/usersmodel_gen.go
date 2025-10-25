@@ -48,8 +48,6 @@ type (
 	Id        string         `db:"id"`
 	Avatar    string         `db:"avatar"`
 	Nickname  string         `db:"nickname"`
-	Username  string         `db:"username"`
-	Email     string         `db:"email"`
 	Phone     string         `db:"phone"`
 	Password  string `db:"password"`
 	Status    *int8  `db:"status"`

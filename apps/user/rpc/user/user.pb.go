@@ -30,8 +30,6 @@ type UserEntity struct {
 	Phone         string                 `protobuf:"bytes,4,opt,name=phone,proto3" json:"phone,omitempty"`       // 手机号码
 	Status        int32                  `protobuf:"varint,5,opt,name=status,proto3" json:"status,omitempty"`    // 锁定状态
 	Sex           int32                  `protobuf:"varint,6,opt,name=sex,proto3" json:"sex,omitempty"`
-	Username      string                 `protobuf:"bytes,7,opt,name=username,proto3" json:"username,omitempty"` // 用户名
-	Email         string                 `protobuf:"bytes,8,opt,name=email,proto3" json:"email,omitempty"`       // 邮箱
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -106,20 +104,6 @@ func (x *UserEntity) GetSex() int32 {
 		return x.Sex
 	}
 	return 0
-}
-
-func (x *UserEntity) GetUsername() string {
-	if x != nil {
-		return x.Username
-	}
-	return ""
-}
-
-func (x *UserEntity) GetEmail() string {
-	if x != nil {
-		return x.Email
-	}
-	return ""
 }
 
 // req && resp
@@ -213,7 +197,7 @@ func (x *Response) GetPong() string {
 
 type LoginReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Username      string                 `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
+	Phone         string                 `protobuf:"bytes,1,opt,name=phone,proto3" json:"phone,omitempty"`
 	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -249,9 +233,9 @@ func (*LoginReq) Descriptor() ([]byte, []int) {
 	return file_apps_user_rpc_user_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *LoginReq) GetUsername() string {
+func (x *LoginReq) GetPhone() string {
 	if x != nil {
-		return x.Username
+		return x.Phone
 	}
 	return ""
 }
@@ -265,11 +249,11 @@ func (x *LoginReq) GetPassword() string {
 
 type LoginResp struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,3,opt,name=Id,proto3" json:"Id,omitempty"`
 	Token         string                 `protobuf:"bytes,1,opt,name=Token,proto3" json:"Token,omitempty"`
 	Expire        int64                  `protobuf:"varint,2,opt,name=expire,proto3" json:"expire,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
+	Id            string
 }
 
 func (x *LoginResp) Reset() {
@@ -302,13 +286,6 @@ func (*LoginResp) Descriptor() ([]byte, []int) {
 	return file_apps_user_rpc_user_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *LoginResp) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
 func (x *LoginResp) GetToken() string {
 	if x != nil {
 		return x.Token
@@ -325,13 +302,11 @@ func (x *LoginResp) GetExpire() int64 {
 
 type RegisterReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Username      string                 `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
-	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
-	Email         string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
-	Phone         string                 `protobuf:"bytes,4,opt,name=phone,proto3" json:"phone,omitempty"`
-	Nickname      string                 `protobuf:"bytes,5,opt,name=nickname,proto3" json:"nickname,omitempty"`
-	Avatar        string                 `protobuf:"bytes,6,opt,name=avatar,proto3" json:"avatar,omitempty"`
-	Sex           int32                  `protobuf:"varint,7,opt,name=sex,proto3" json:"sex,omitempty"`
+	Phone         string                 `protobuf:"bytes,1,opt,name=phone,proto3" json:"phone,omitempty"`
+	Nickname      string                 `protobuf:"bytes,2,opt,name=nickname,proto3" json:"nickname,omitempty"`
+	Password      string                 `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
+	Avatar        string                 `protobuf:"bytes,4,opt,name=avatar,proto3" json:"avatar,omitempty"`
+	Sex           int32                  `protobuf:"varint,5,opt,name=sex,proto3" json:"sex,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -366,27 +341,6 @@ func (*RegisterReq) Descriptor() ([]byte, []int) {
 	return file_apps_user_rpc_user_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *RegisterReq) GetUsername() string {
-	if x != nil {
-		return x.Username
-	}
-	return ""
-}
-
-func (x *RegisterReq) GetPassword() string {
-	if x != nil {
-		return x.Password
-	}
-	return ""
-}
-
-func (x *RegisterReq) GetEmail() string {
-	if x != nil {
-		return x.Email
-	}
-	return ""
-}
-
 func (x *RegisterReq) GetPhone() string {
 	if x != nil {
 		return x.Phone
@@ -397,6 +351,13 @@ func (x *RegisterReq) GetPhone() string {
 func (x *RegisterReq) GetNickname() string {
 	if x != nil {
 		return x.Nickname
+	}
+	return ""
+}
+
+func (x *RegisterReq) GetPassword() string {
+	if x != nil {
+		return x.Password
 	}
 	return ""
 }
@@ -663,7 +624,7 @@ var File_apps_user_rpc_user_proto protoreflect.FileDescriptor
 
 const file_apps_user_rpc_user_proto_rawDesc = "" +
 	"\n" +
-	"\x18apps/user/rpc/user.proto\x12\x04user\"\xc2\x01\n" +
+	"\x18apps/user/rpc/user.proto\x12\x04user\"\x90\x01\n" +
 	"\n" +
 	"UserEntity\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
@@ -671,28 +632,23 @@ const file_apps_user_rpc_user_proto_rawDesc = "" +
 	"\bnickname\x18\x03 \x01(\tR\bnickname\x12\x14\n" +
 	"\x05phone\x18\x04 \x01(\tR\x05phone\x12\x16\n" +
 	"\x06status\x18\x05 \x01(\x05R\x06status\x12\x10\n" +
-	"\x03sex\x18\x06 \x01(\x05R\x03sex\x12\x1a\n" +
-	"\busername\x18\a \x01(\tR\busername\x12\x14\n" +
-	"\x05email\x18\b \x01(\tR\x05email\"\x1d\n" +
+	"\x03sex\x18\x06 \x01(\x05R\x03sex\"\x1d\n" +
 	"\aRequest\x12\x12\n" +
 	"\x04ping\x18\x01 \x01(\tR\x04ping\"\x1e\n" +
 	"\bResponse\x12\x12\n" +
-	"\x04pong\x18\x01 \x01(\tR\x04pong\"B\n" +
-	"\bLoginReq\x12\x1a\n" +
-	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword\"I\n" +
-	"\tLoginResp\x12\x0e\n" +
-	"\x02Id\x18\x03 \x01(\tR\x02Id\x12\x14\n" +
+	"\x04pong\x18\x01 \x01(\tR\x04pong\"<\n" +
+	"\bLoginReq\x12\x14\n" +
+	"\x05phone\x18\x01 \x01(\tR\x05phone\x12\x1a\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\"9\n" +
+	"\tLoginResp\x12\x14\n" +
 	"\x05Token\x18\x01 \x01(\tR\x05Token\x12\x16\n" +
-	"\x06expire\x18\x02 \x01(\x03R\x06expire\"\xb7\x01\n" +
-	"\vRegisterReq\x12\x1a\n" +
-	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword\x12\x14\n" +
-	"\x05email\x18\x03 \x01(\tR\x05email\x12\x14\n" +
-	"\x05phone\x18\x04 \x01(\tR\x05phone\x12\x1a\n" +
-	"\bnickname\x18\x05 \x01(\tR\bnickname\x12\x16\n" +
-	"\x06avatar\x18\x06 \x01(\tR\x06avatar\x12\x10\n" +
-	"\x03sex\x18\a \x01(\x05R\x03sex\"<\n" +
+	"\x06expire\x18\x02 \x01(\x03R\x06expire\"\x85\x01\n" +
+	"\vRegisterReq\x12\x14\n" +
+	"\x05phone\x18\x01 \x01(\tR\x05phone\x12\x1a\n" +
+	"\bnickname\x18\x02 \x01(\tR\bnickname\x12\x1a\n" +
+	"\bpassword\x18\x03 \x01(\tR\bpassword\x12\x16\n" +
+	"\x06avatar\x18\x04 \x01(\tR\x06avatar\x12\x10\n" +
+	"\x03sex\x18\x05 \x01(\x05R\x03sex\"<\n" +
 	"\fRegisterResp\x12\x14\n" +
 	"\x05Token\x18\x01 \x01(\tR\x05Token\x12\x16\n" +
 	"\x06expire\x18\x02 \x01(\x03R\x06expire\" \n" +
