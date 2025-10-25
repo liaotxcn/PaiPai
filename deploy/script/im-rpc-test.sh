@@ -1,0 +1,24 @@
+#!/bin/bash
+reso_addr='registry.cn-shenzhen.aliyuncs.com/paipai/im-rpc-dev'
+tag='latest'
+
+container_name="pai-pai-im-rpc-test"
+
+docker stop ${container_name}
+
+docker rm ${container_name}
+
+docker rmi ${reso_addr}:${tag}
+
+docker pull ${reso_addr}:${tag}
+
+
+# 如果需要指定配置文件
+# docker run -p 10001:8080 --network paipai -v /paipai/config/user-rpc:/user/conf/ --name=${container_name} -d ${reso_addr}:${tag}
+# docker run -p 10002:10002  --name=${container_name} -d ${reso_addr}:${tag}  # 原配置
+docker run -p 10002:10002 \
+    --health-cmd="nc -z localhost 10000 || exit 1" \
+    --health-interval=30s \
+    --health-timeout=5s \
+    --health-retries=3 \
+    --name=${container_name} -d ${reso_addr}:${tag}
