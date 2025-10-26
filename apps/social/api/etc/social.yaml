@@ -9,8 +9,7 @@ Redisx:
 SocialRpc:
   Etcd:
     Hosts:
-      - etcd:3379   # 宿主机
-    Key: social.rpc
+      - etcd:3379   # 宿主�?    Key: social.rpc
 
 UserRpc:
   Etcd:
