@@ -27,7 +27,7 @@ func main() {
 	var c config.Config
 
 	// 从环境变量获取HOST_IP，如果没有则使用默认值
-	hostIP := "host.docker.internal"
+	hostIP := "etcd"
 	if envHostIP := os.Getenv("HOST_IP"); envHostIP != "" {
 		hostIP = envHostIP
 	}

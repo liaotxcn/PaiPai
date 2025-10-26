@@ -1,24 +1,32 @@
 package svc
 
 import (
-	model "PaiPai/apps/im/immodels"
-	"PaiPai/apps/im/rpc/internal/config"
+        model "PaiPai/apps/im/immodels"
+        "PaiPai/apps/im/rpc/internal/config"
+        "github.com/zeromicro/go-zero/core/logx"
 )
 
 type ServiceContext struct {
-	Config config.Config
+        Config config.Config
 
-	model.ChatLogModel
-	model.ConversationsModel
-	model.ConversationModel
+        ChatLogModel       model.ChatLogModel
+        ConversationsModel model.ConversationsModel
+        ConversationModel  model.ConversationModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	return &ServiceContext{
-		Config: c,
+        ctx := &ServiceContext{
+                Config: c,
+        }
 
-		ChatLogModel:       model.MustChatLogModel(c.Mongo.Url, c.Mongo.Db),
-		ConversationsModel: model.MustConversationsModel(c.Mongo.Url, c.Mongo.Db),
-		ConversationModel:  model.MustConversationModel(c.Mongo.Url, c.Mongo.Db),
-	}
+        // 只有在 MongoDB 配置有效时才初始化模型
+        if c.Mongo.Url != "" && c.Mongo.Db != "" {
+                ctx.ChatLogModel = model.MustChatLogModel(c.Mongo.Url, c.Mongo.Db)
+                ctx.ConversationsModel = model.MustConversationsModel(c.Mongo.Url, c.Mongo.Db)
+                ctx.ConversationModel = model.MustConversationModel(c.Mongo.Url, c.Mongo.Db)
+        } else {
+                logx.Info("MongoDB not configured, skipping model initialization")
+        }
+
+        return ctx
 }

@@ -2,7 +2,7 @@ Name: im.ws
 ListenOn: 0.0.0.0:10090
 
 JwtAuth:
-  AccessSecret: paipai
+  AccessSecret: "paipai123"
 
 Mongo:
   Url: "mongodb://root:paipai@${HOST_IP}:47017"

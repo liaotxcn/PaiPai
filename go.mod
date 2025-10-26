@@ -1,6 +1,6 @@
 module PaiPai
 
-go 1.24.0
+go 1.24.1
 
 require (
 	github.com/HYY-yu/sail-client v0.5.2

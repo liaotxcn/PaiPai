@@ -23,7 +23,7 @@ func main() {
 	var c config.Config
 	//conf.MustLoad(*configFile, &c)
 	var configs = "social.yaml"
-	// 使用etcd容器名称而不是host.docker.internal，以便在Docker网络中直接解析
+	// 使用etcd容器名称而不是etcd，以便在Docker网络中直接解析
 	hostIP := "etcd"
 	if envHostIP := os.Getenv("HOST_IP"); envHostIP != "" {
 		hostIP = envHostIP

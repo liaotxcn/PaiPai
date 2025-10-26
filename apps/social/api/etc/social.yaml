@@ -3,27 +3,26 @@ Host: 0.0.0.0
 Port: 8881
 
 Redisx:
-  Host: ${HOST_IP}:16379
+  Host: redis:6379
   Pass: paipai
 
 SocialRpc:
   Etcd:
-    Host:
-      - ${HOST_IP}:3379   # 宿主机
-    Key: social.rpc
+    Hosts:
+      - etcd:3379   # 宿主�?    Key: social.rpc
 
 UserRpc:
   Etcd:
-    Host:
-      - ${HOST_IP}:3379
+    Hosts:
+      - etcd:3379
     Key: user.rpc
 
 ImRpc:
   Etcd:
-    Host:
-      - ${HOST_IP}:3379
+    Hosts:
+      - etcd:3379
     Key: im.rpc
 
 JwtAuth:
-  AccessSecret: paipai
+  AccessSecret: "paipai123"
   AccessExpire: 864000

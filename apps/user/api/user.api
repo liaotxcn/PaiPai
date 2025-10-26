@@ -5,20 +5,8 @@ info (
 	author: "paipai"
 )
 
-// 类型定义
-type User {
-    Id       string `json:"id"`
-    Mobile   string `json:"mobile"`
-    Nickname string `json:"nickname"`
-    Sex      byte   `json:"sex"`
-    Avatar   string `json:"avatar"`
-}
-
-type (
-    UserInfoReq {}
-    UserInfoResp {
-        Info User `json:"info"`
-    }
+import (
+	"domain.api"
 )
 
 // -------------- user api v1 --------------
@@ -35,23 +23,6 @@ service user {
 	@doc "用户登入"
 	@handler login
 	post /login (LoginReq) returns (LoginResp)
-}
-
-// 请求参数定义
-type RegisterReq {
-	Username        string `json:"username"`
-	Password        string `json:"password"`
-	ConfirmPassword string `json:"confirm_password"`
-	Email           string `json:"email"`
-	Phone           string `json:"phone"`
-	Nickname        string `json:"nickname"`
-	Sex             byte   `json:"sex"`
-	Avatar          string `json:"avatar"`
-}
-
-type LoginReq {
-	Username string `json:"username"`
-	Password string `json:"password"`
 }
 
 //need login

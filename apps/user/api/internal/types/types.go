@@ -4,7 +4,7 @@
 package types
 
 type LoginReq struct {
-	Username string `json:"username"`
+	Phone    string `json:"phone"`
 	Password string `json:"password"`
 }
 
@@ -14,14 +14,11 @@ type LoginResp struct {
 }
 
 type RegisterReq struct {
-	Username        string `json:"username"`
-	Password        string `json:"password"`
-	ConfirmPassword string `json:"confirm_password"`
-	Email           string `json:"email"`
-	Phone           string `json:"phone"`
-	Nickname        string `json:"nickname"`
-	Sex             byte   `json:"sex"`
-	Avatar          string `json:"avatar"`
+	Phone    string `json:"phone"`
+	Password string `json:"password"`
+	Nickname string `json:"nickname"`
+	Sex      byte   `json:"sex"`
+	Avatar   string `json:"avatar"`
 }
 
 type RegisterResp struct {

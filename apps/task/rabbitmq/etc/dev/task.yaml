@@ -32,7 +32,7 @@ MsgReadHandler:
   GroupMsgReadRecordDelayCount: 2
 
 Redisx:
-  Host: ${HOST_IP}:16379
+  Host: redis:6379
   Type: node
   Pass: pai-pai
 
@@ -43,7 +43,7 @@ Mongo:
 SocialRpc:
   Etcd:
     Hosts:
-      - ${HOST_IP}:3379
+      - etcd:3379
     Key: social.rpc
 
 Ws:
