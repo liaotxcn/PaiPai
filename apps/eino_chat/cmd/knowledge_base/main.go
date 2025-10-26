@@ -48,15 +48,29 @@ func main() {
 
 	err := indexMarkdownFiles(ctx, "./eino-docs")
 	if err != nil {
-		panic(err)
+		// 增强的错误处理
+		if strings.Contains(err.Error(), "does not support RediSearch module") {
+			log.Printf("错误: %v", err)
+			log.Println("解决方案:")
+			log.Println("1. 下载并安装Redis Stack (推荐): https://redis.io/download/")
+			log.Println("2. 或者单独安装RediSearch模块并在启动Redis时加载")
+			log.Println("3. 或者使用云托管的Redis服务，确保启用了RediSearch功能")
+		} else {
+			log.Printf("索引文档时发生错误: %v", err)
+		}
+		// 不再使用panic，而是优雅退出
+		os.Exit(1)
 	}
 
-	fmt.Println("index success")
+	log.Println("index success")
 }
 
 func indexMarkdownFiles(ctx context.Context, dir string) error {
+	log.Printf("开始构建知识库索引，文档目录: %s", dir)
+
 	runner, err := knowledge_service.BuildKnowledgeIndexing(ctx)
 	if err != nil {
+		log.Printf("构建索引图失败: %v", err)
 		return fmt.Errorf("build index graph failed: %w", err)
 	}
 
@@ -78,7 +92,10 @@ func indexMarkdownFiles(ctx context.Context, dir string) error {
 
 		ids, err := runner.Invoke(ctx, document.Source{URI: path})
 		if err != nil {
-			return fmt.Errorf("invoke index graph failed: %w", err)
+			// 记录详细错误但继续处理其他文件
+			log.Printf("[error] 处理文件 %s 时出错: %v", path, err)
+			// 不返回错误，继续处理其他文件
+			return nil
 		}
 
 		fmt.Printf("[done] indexing file: %s, len of parts: %d\n", path, len(ids))
@@ -123,14 +140,27 @@ func initVectorIndex(ctx context.Context, config *RedisVectorStoreConfig) (err e
 
 	indexName := fmt.Sprintf("%s%s", config.RedisKeyPrefix, config.IndexName)
 
+	// 检查是否支持RediSearch模块
+	_, err = client.Do(ctx, "FT.INFO", indexName).Result()
+	if err != nil {
+		if strings.Contains(err.Error(), "unknown command") {
+			log.Println("警告: Redis服务器不支持RediSearch模块，无法创建向量索引")
+			log.Println("请使用带有RediSearch模块的Redis版本，或者使用Redis Stack")
+			return fmt.Errorf("redis does not support RediSearch module")
+		}
+		// 如果是索引不存在的错误，继续执行
+	}
+
 	// 检查是否存在索引
 	exists, err := client.Do(ctx, "FT.INFO", indexName).Result()
 	if err != nil {
-		if !strings.Contains(err.Error(), "Unknown index name") {
+		if !strings.Contains(err.Error(), "Unknown index name") && !strings.Contains(err.Error(), "unknown command") {
+			log.Printf("检查索引是否存在时出错: %v", err)
 			return fmt.Errorf("failed to check if index exists: %w", err)
 		}
 		err = nil
 	} else if exists != nil {
+		log.Printf("索引 %s 已存在，跳过创建", indexName)
 		return nil
 	}
 
@@ -150,13 +180,16 @@ func initVectorIndex(ctx context.Context, config *RedisVectorStoreConfig) (err e
 	}
 
 	if err = client.Do(ctx, createIndexArgs...).Err(); err != nil {
+		log.Printf("创建索引失败: %v", err)
 		return fmt.Errorf("failed to create index: %w", err)
 	}
 
 	// 验证索引是否创建成功
 	if _, err = client.Do(ctx, "FT.INFO", indexName).Result(); err != nil {
+		log.Printf("验证索引创建失败: %v", err)
 		return fmt.Errorf("failed to verify index creation: %w", err)
 	}
 
+	log.Printf("Redis向量索引 %s 创建成功", indexName)
 	return nil
 }
