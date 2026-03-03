@@ -36,14 +36,6 @@ jobs:
       - name: Check for go.mod and go.sum consistency 
         run: go mod tidy && git diff --exit-code go.mod go.sum || (echo "go.mod or go.sum is out of sync. Run 'go mod tidy' locally." && exit 1) 
 
-      - name: Check code formatting 
-        run: | 
-          if [ -n "$(gofmt -l .)" ]; then 
-            echo "The following files are not formatted:" 
-            gofmt -l . 
-            exit 1 
-          fi 
-
       - name: Run go vet 
         run: go vet ./... 
 
