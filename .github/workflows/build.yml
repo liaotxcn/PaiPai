@@ -1,0 +1,93 @@
+name: CI Check 
+
+on: 
+  push: 
+    branches: [ main, master, develop ] 
+  pull_request: 
+    branches: [ main, master, develop ] 
+
+jobs: 
+  build: 
+    name: Build Check 
+    runs-on: ubuntu-latest 
+    
+    steps: 
+      - name: Checkout code 
+        uses: actions/checkout@v4 
+
+      - name: Set up Go 
+        uses: actions/setup-go@v5 
+        with: 
+          go-version: '1.23' 
+          cache: true 
+
+      - name: Display Go version 
+        run: go version 
+
+      - name: Display Go environment 
+        run: go env 
+
+      - name: Download dependencies 
+        run: go mod download 
+
+      - name: Verify dependencies 
+        run: go mod verify 
+
+      - name: Check for go.mod and go.sum consistency 
+        run: go mod tidy && git diff --exit-code go.mod go.sum || (echo "go.mod or go.sum is out of sync. Run 'go mod tidy' locally." && exit 1) 
+
+      - name: Check code formatting 
+        run: | 
+          if [ -n "$(gofmt -l .)" ]; then 
+            echo "The following files are not formatted:" 
+            gofmt -l . 
+            exit 1 
+          fi 
+
+      - name: Run go vet 
+        run: go vet ./... 
+
+      - name: Build check for user-api 
+        run: | 
+          cd apps/user/api 
+          go build -v 
+
+      - name: Build check for user-rpc 
+        run: | 
+          cd apps/user/rpc 
+          go build -v 
+
+      - name: Build check for social-api 
+        run: | 
+          cd apps/social/api 
+          go build -v 
+
+      - name: Build check for social-rpc 
+        run: | 
+          cd apps/social/rpc 
+          go build -v 
+
+      - name: Build check for im-api 
+        run: | 
+          cd apps/im/api 
+          go build -v 
+
+      - name: Build check for im-rpc 
+        run: | 
+          cd apps/im/rpc 
+          go build -v 
+
+      - name: Build check for im-ws 
+        run: | 
+          cd apps/im/ws 
+          go build -v 
+
+      - name: Build check for task-mq 
+        run: | 
+          cd apps/task/mq 
+          go build -v 
+
+      - name: Build check for eino_chat 
+        run: | 
+          cd apps/eino_chat/cmd/knowledge_base 
+          go build -v 
