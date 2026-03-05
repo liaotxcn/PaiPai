@@ -69,12 +69,12 @@ jobs:
       - name: Build check for im-ws 
         run: | 
           cd apps/im/ws 
-          go build -o im-ws -v 
+          go build -v 
 
       - name: Build check for task-mq 
         run: | 
           cd apps/task/mq 
-          go build -o task-mq -v 
+          go build -v 
 
       - name: Build check for eino_chat 
         run: | 
