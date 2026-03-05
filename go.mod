@@ -5,7 +5,7 @@ go 1.24.1
 require (
 	github.com/HYY-yu/sail-client v0.5.2
 	github.com/bwmarrin/snowflake v0.3.0
-	github.com/cloudwego/eino v0.4.3
+	github.com/cloudwego/eino v0.7.36
 	github.com/cloudwego/eino-ext/components/document/loader/file v0.0.0-20250811131559-fa5c34766bc3
 	github.com/cloudwego/eino-ext/components/document/transformer/splitter/markdown v0.0.0-20250811131559-fa5c34766bc3
 	github.com/cloudwego/eino-ext/components/embedding/ark v0.1.0
@@ -24,7 +24,7 @@ require (
 	github.com/stretchr/testify v1.10.0
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
 	github.com/zeromicro/go-queue v1.2.2
-	github.com/zeromicro/go-zero v1.8.5
+	github.com/zeromicro/go-zero v1.10.0
 	github.com/zeromicro/x v0.0.0-20240408115609-8224c482b07e
 	go.mongodb.org/mongo-driver v1.17.4
 	golang.org/x/crypto v0.39.0

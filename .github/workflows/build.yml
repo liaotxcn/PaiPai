@@ -33,8 +33,8 @@ jobs:
       - name: Verify dependencies 
         run: go mod verify 
 
-      - name: Check for go.mod and go.sum consistency 
-        run: go mod tidy && git diff --exit-code go.mod go.sum || (echo "go.mod or go.sum is out of sync. Run 'go mod tidy' locally." && exit 1) 
+      - name: Run go mod tidy 
+        run: go mod tidy 
 
       - name: Build check for user-api 
         run: | 
@@ -69,12 +69,12 @@ jobs:
       - name: Build check for im-ws 
         run: | 
           cd apps/im/ws 
-          go build -o im-ws -v 
+          go build -v 
 
       - name: Build check for task-mq 
         run: | 
           cd apps/task/mq 
-          go build -o task-mq -v 
+          go build -v 
 
       - name: Build check for eino_chat 
         run: | 

@@ -133,8 +133,8 @@ github.com/clbanning/mxj/v2 v2.5.5/go.mod h1:hNiWqW14h+kc+MdF9C6/YoRfjEJoR3ou6tn
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/cloudwego/base64x v0.1.5 h1:XPciSp1xaq2VCSt6lF0phncD4koWyULpl5bUxbfCyP4=
 github.com/cloudwego/base64x v0.1.5/go.mod h1:0zlkT4Wn5C6NdauXdJRhSKRlJvmclQ1hhJgA0rcu/8w=
-github.com/cloudwego/eino v0.4.3 h1:ihHVHPMA8G2DPWeN+NTuIKr1QBAet9g84buH+LUl1bU=
-github.com/cloudwego/eino v0.4.3/go.mod h1:wUjz990apdsaOraOXdh6CdhVXq8DJsOvLsVlxNTcNfY=
+github.com/cloudwego/eino v0.7.36 h1:BKXCq8cExQj9QtpUEBDux818LY8POkD+r9wukGUKUpw=
+github.com/cloudwego/eino v0.7.36/go.mod h1:nA8Vacmuqv3pqKBQbTWENBLQ8MmGmPt/WqiyLeB8ohQ=
 github.com/cloudwego/eino-ext/components/document/loader/file v0.0.0-20250811131559-fa5c34766bc3 h1:gWWyDwLAk4iqIwfHedOhDqrbyAAIHTeX9KPlmoLDaDs=
 github.com/cloudwego/eino-ext/components/document/loader/file v0.0.0-20250811131559-fa5c34766bc3/go.mod h1:wRq8UHQENoJos8nxrZnbtvzCygSXsoO9NJWWQT5scY0=
 github.com/cloudwego/eino-ext/components/document/transformer/splitter/markdown v0.0.0-20250811131559-fa5c34766bc3 h1:I/2/guPi5nvqC2v1WwGnggkLh/GjLT0aQkr6/cphHh0=
@@ -730,8 +730,8 @@ github.com/yuin/gopher-lua v1.1.1 h1:kYKnWBjvbNP4XLT3+bPEwAXJx262OhaHDWDVOPjL46M
 github.com/yuin/gopher-lua v1.1.1/go.mod h1:GBR0iDaNXjAgGg9zfCvksxSRnQx76gclCIb7kdAd1Pw=
 github.com/zeromicro/go-queue v1.2.2 h1:3TMhRlI/8lZy13Sj6FBBWWRXlsQhGCchRxY2itfV1Is=
 github.com/zeromicro/go-queue v1.2.2/go.mod h1:5HiNTEw1tACi9itho0JYQ1+EpIGpSFM4tOQ4bit+yKM=
-github.com/zeromicro/go-zero v1.8.5 h1:YkdQhYllE+BPOrxcni0oCewebs7qHfXvjN9glnpcmJQ=
-github.com/zeromicro/go-zero v1.8.5/go.mod h1:P0DKW1vJx+2J3TReptbeg0H9tRSvehymr0HX4SCfZ6g=
+github.com/zeromicro/go-zero v1.10.0 h1:+qfAqj+BGt0qjW1PQk2VO5WLwIQBh60CA3OTLsBosS8=
+github.com/zeromicro/go-zero v1.10.0/go.mod h1:qAModWGsfkrBl0JP9oS7K7k6dgucExOuQdpzHyXVKLg=
 github.com/zeromicro/x v0.0.0-20240408115609-8224c482b07e h1:F5waakzloTfbJg2lcO1xvrzO6ssn7jQ38lXIDBz+nbQ=
 github.com/zeromicro/x v0.0.0-20240408115609-8224c482b07e/go.mod h1:5TP11tc1RHPCi5C/KDL0kIB0KgJAb9FB3ChpT/qM/jA=
 go.etcd.io/etcd/api/v3 v3.5.4/go.mod h1:5GB2vv4A4AOn3yk7MftYGHkUfGtDHnEraIjym4dYz5A=
